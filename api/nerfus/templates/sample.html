@@ -1,0 +1,53 @@
+{% extends "base-layout.html" %}
+
+{% block head %}
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+{% endblock %}
+
+
+
+{% block body %}
+    <h1>This is a sample web page</h1>
+    <p>It show you the basic of templating using Jinja, Flask and Python</p>
+    <h3>Here is some useful documentation:</h3>
+    <p><a href="http://flask.pocoo.org/docs/0.12/" target="_blank">Flask</a>: Web server and API call</p>
+    <p><a href="http://jinja.pocoo.org/docs/2.9/templates/" target="_blank">Jinja</a>: Web pages templating</p>
+    <p><a href="http://docs.sqlalchemy.org/en/latest/" target="_blank">SQLAlchemy</a>: To talk to the database</p>
+
+
+    <h3>Here is an example of data dynamically taken from the database:</h3>
+    <table>
+        <tr>
+            <th>Gun Name</th>
+            <th>Description</th>
+            <th>Number of bullets</th>
+        </tr>
+        {% for gun in guns %}
+        <tr>
+            <td>{{ gun.name }}</td>
+            <td>{{ gun.description }}</td>
+            <td>{{ gun.initial_ammo }}</td>
+        </tr>
+        {% else %}
+            No gun found!
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block js %}
+{% endblock %}
