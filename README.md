@@ -56,6 +56,10 @@
 <table style="width: 41%; margin-right: calc(59%);">
 	<tbody>
 		<tr>
+			<td style="width: 27.4949%;"><strong>Single Instance Only</strong></td>
+			<td style="width: 72.5051%;">Doit être coché</td>
+		</tr>
+		<tr>
 			<td style="width: 27.4949%;"><strong>Script</strong></td>
 			<td style="width: 72.5051%;">Doit pointer vers le fichier <strong>run.py</strong></td>
 		</tr>
@@ -83,6 +87,10 @@
 <table style="width: 41%; margin-right: calc(59%);">
 	<tbody>
 		<tr>
+			<td style="width: 27.4949%;"><strong>Single Instance Only</strong></td>
+			<td style="width: 72.5051%;">Doit être coché</td>
+		</tr>
+		<tr>
 			<td style="width: 26.593%;"><strong>Name</strong></td>
 			<td style="width: 73.2033%;">Tests</td>
 		</tr>
@@ -96,3 +104,5 @@
 		</tr>
 	</tbody>
 </table>
+
+<p><i><strong>*Note:</strong> Parce que l'on utilise un tunnel pour se connecter à la database, les tests ne se termine pas automatiquement. Cela est dû au fait que le serveur tunnel reste actif après la suite de tests. Alors, lorsque tous vos tests passent, vous pouvez simplement appuyer sur stop.</i></p>

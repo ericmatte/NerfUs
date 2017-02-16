@@ -1,10 +1,10 @@
 from sqlalchemy import Column
 from sqlalchemy.types import Integer, Unicode
-
 from nerfus.server.base import DeclarativeBase, BaseEntity
 
 
 class Gun(DeclarativeBase, BaseEntity):
+    """The gun"""
     __tablename__ = 'gun'
 
     bank_id = Column('gun_id', Integer, primary_key=True)
