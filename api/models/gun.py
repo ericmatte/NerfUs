@@ -7,7 +7,7 @@ class Gun(DeclarativeBase, BaseEntity):
     """The gun"""
     __tablename__ = 'gun'
 
-    bank_id = Column('gun_id', Integer, primary_key=True)
+    gun_id = Column('gun_id', Integer, primary_key=True)
 
     name = Column('name', Unicode(30))
     description = Column('description', Unicode(256))
