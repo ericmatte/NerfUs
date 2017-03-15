@@ -13,7 +13,7 @@ setup(
     install_requires=[
         'pip >= 9.0.1',
         'Flask >= 0.11.1',
-        'tornado',
+        'flask-socketio',
         'oauth2client',
         'blinker >= 1.4',
         'sqlalchemy >= 0.9.9',

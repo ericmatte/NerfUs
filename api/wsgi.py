@@ -1,6 +1,7 @@
 import os
 os.environ['MODE'] = 'PROD'
 
-from nerfus.flask import app
+from nerfus.flask import app, socket_io
+
 if __name__ == '__main__':
-    app.run()
+    socket_io.run(app)
