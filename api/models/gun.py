@@ -11,5 +11,8 @@ class Gun(DeclarativeBase, BaseEntity):
 
     name = Column('name', Unicode(30))
     description = Column('description', Unicode(256))
-    initial_ammo = Column('initial_ammo', Integer)
+    ammo = Column('ammo', Integer)
+    damage = Column('damage', Integer)
+    range = Column('range', Integer)
+    accuracy = Column('accuracy', Integer)
     rfid_code = Column('rfid_code', Unicode(64))

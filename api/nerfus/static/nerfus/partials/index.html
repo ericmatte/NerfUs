@@ -12,10 +12,13 @@
 
 <div ng-controller="GunController">
     {{ greeting }}
-
+    <p><a href="/#/gun-selection" class="w3-button w3-red w3-xxlarge w3-display-middle">START</a></p>
+    <p><a href="/websocket" target="_blank" class="w3-button w3-blue w3-xlarge">Simple Websocket</a></p>
     <button type="button" ng-click="getItems()">Get Items</button>
 
     <ul>
        <li ng-repeat="item in items"> {{ item.name }}</li>
     </ul>
+
+
 </div>
