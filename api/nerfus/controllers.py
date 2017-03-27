@@ -1,3 +1,5 @@
+from models import to_json
+from models.game import Game
 from nerfus import sockets  # Unused import, but necessary in order for sockets to work
 from flask import json
 from flask import make_response
@@ -22,5 +24,11 @@ def websocket():
 def get_guns():
     # return make_response(open('nerfus/templates/index.html').read())
     guns = Gun.get_all()
-    return make_response(json.dumps(guns, cls=AlchemyEncoder))
+    return make_response(to_json(guns))
+
+
+@app.route('/get-games', methods=['POST'])
+def get_games():
+    games = Game.get_all()
+    return make_response(to_json(games))
 

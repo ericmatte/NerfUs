@@ -1,6 +1,8 @@
 
 from flask_socketio import emit
 
+from models import to_json
+from models.gun import Gun
 from nerfus.flask import socket_io
 
 values = {
@@ -11,6 +13,14 @@ values = {
 def value_changed(message):
     values[message['who']] = message['data']
     emit('update value', message, broadcast=True)
+
+
+@socket_io.on('mbed')
+def value_changed(message):
+    param, value = message.split('=')
+    if param == 'GUN':
+        gun = Gun.get(rfid_code=value)
+        emit('select_gun', to_json(gun, False), broadcast=True)
 
 
 @socket_io.on('my event')

@@ -3,75 +3,104 @@
 var myApp = angular.module('myApp', ['ngRoute']);
 
 var socket = io.connect('http://' + document.domain + ':' + location.port);
-socket.on('connect', function() {
+socket.on('connect', function () {
     socket.emit('my event', {data: 'Website connected.'});
 });
 
+// Game variables
+var gameVars = {'gun': undefined, 'game': undefined};
+
 myApp.config(['$routeProvider',
-     function($routeProvider) {
-         $routeProvider.
-             when('/', {
-                 templateUrl: '/static/nerfus/partials/index.html'
-             }).
-             when('/gun-selection', {
-                 templateUrl: '../static/nerfus/partials/gun-selection.html'
-             }).
-             when('/mbed', {
-                 templateUrl: '../static/nerfus/partials/mbed.html'
-             }).
-             when('/about', {
-                 templateUrl: '../static/nerfus/partials/about.html'
-             }).
-             otherwise({
-                 redirectTo: '/'
-             });
+    function ($routeProvider) {
+        $routeProvider.when('/', {
+            templateUrl: '/static/nerfus/partials/index.html'
+        }).when('/gun-selection', {
+            templateUrl: '../static/nerfus/partials/gun-selection.html'
+        }).when('/game-selection', {
+            templateUrl: '../static/nerfus/partials/game-selection.html'
+        }).when('/mbed', {
+            templateUrl: '../static/nerfus/partials/mbed.html'
+        }).when('/about', {
+            templateUrl: '../static/nerfus/partials/about.html'
+        }).otherwise({
+            redirectTo: '/'
+        });
     }
 ]);
 
-myApp.controller('Example', ['$scope','$http', function($scope,$http) {
+myApp.controller('Example', ['$scope', '$http', function ($scope, $http) {
     $scope.greeting = 'Hola!';
 
-    $scope.items = [{'name':'Bazooka'},{'name':'MachineGun'}];
+    $scope.items = [{'name': 'Bazooka'}, {'name': 'MachineGun'}];
 
-    $scope.getItems = function() {
-     $http({method: 'POST', url: '/get-guns'})
-        .success(function(data, status) {
-            $scope.items = data;
-         })
-        .error(function(data, status) {
-            alert("Error");
-        })
+    $scope.getItems = function () {
+        $http({method: 'POST', url: '/get-guns'})
+            .success(function (data, status) {
+                $scope.items = data;
+            })
+            .error(function (data, status) {
+                alert("Error");
+            })
     };
 }]);
 
-/* gun-selection.html */
-myApp.controller('GunSelector', ['$scope','$http', function($scope,$http) {
-    $scope.greeting = 'Hola!';
-
-    $scope.items = [];
+/* Gun Selection */
+myApp.controller('GunSelector', ['$scope', '$http', function ($scope, $http) {
     $scope.gun = undefined;
     $http({method: 'POST', url: '/get-guns'})
-        .success(function(data, status) {
-            $scope.items = data;
-            $scope.gun = $scope.items[1];
-         })
-        .error(function(data, status) {
+        .success(function (data, status) {
+            $scope.gun = data[0];
+        })
+        .error(function (data, status) {
             alert("Error while loading the weapons!");
         });
 
-    $scope.getItems = function() {
+    socket.on('select_gun', function (selectedGun) {
+        $scope.gun = selectedGun;
+        gameVars.gun = selectedGun;
+        $scope.$apply();
+    });
+}]);
+
+/* Game Selection */
+myApp.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
+    $scope.games = undefined;
+    $http({method: 'POST', url: '/get-games'})
+        .success(function (data, status) {
+            $scope.games = data;
+        })
+        .error(function (data, status) {
+            alert("Error while loading all games!");
+        });
+
+    $scope.selectGame = function (gameId) {
+        for (var i = 0; i < $scope.games.length; i++) {
+            if ($scope.games[i].id == gameId) {
+                gameVars.game = $scope.games[i];
+                window.location = '/#/ready';
+                return;
+            }
+        }
     };
 }]);
 
-myApp.controller('mbed', ['$scope','$http', function($scope,$http) {
-    $scope.greeting = 'Hola!';
+/* mbed Available Commands */
+myApp.controller('mbed', ['$scope', '$http', function ($scope, $http) {
+    $scope.commands = [
+        {title: "Select gun", example: "GUN=34ba12987ffa",
+         description: "Command to send when the RFID of a gun has been scanned."},
+        {title: "Start", example: "START",
+         description: "Allow the game to start."}];
 
-    $scope.commands = [{title:"Select gun", command:"GUN=34ba12987ffa",
-                        description:"Command to send when the RFID of a gun has been scanned."},
-                       {title:"Start", command:"START",
-                        description:"Allow the game to start."}];
+    $http({method: 'POST', url: '/get-guns'})
+        .success(function (data, status) {
+            $scope.commands[0]['commands'] = [];
+            for (var i = 0; i < data.length; i++) {
+                $scope.commands[0]['commands'].push("GUN=" + data[i].rfid_code);
+            }
+        });
 
-    $scope.sendCommand = function(command) {
-        alert(command);
+    $scope.sendCommand = function (command) {
+        socket.emit('mbed', command);
     };
 }]);

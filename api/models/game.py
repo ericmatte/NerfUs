@@ -15,4 +15,5 @@ class Game(DeclarativeBase, BaseEntity):
     description = Column('description', Unicode(256))
     game_length = Column('game_length', Integer)
     max_reflex_time = Column('max_reflex_time', Integer)
+    number_of_target = Column('number_of_target', Integer)
     verify_precision = Column('verify_precision', Boolean)
