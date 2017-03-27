@@ -38,18 +38,21 @@ myApp.controller('GunController', ['$scope','$http', function($scope,$http) {
     };
 }]);
 
+/* gun-selection.html */
 myApp.controller('GunSelector', ['$scope','$http', function($scope,$http) {
     $scope.greeting = 'Hola!';
 
-    $scope.items = [{'name':'Bazooka'},{'name':'MachineGun'}];
-
-    $scope.getItems = function() {
-     $http({method: 'POST', url: '/get-guns'})
+    $scope.items = [];
+    $scope.gun = undefined;
+    $http({method: 'POST', url: '/get-guns'})
         .success(function(data, status) {
             $scope.items = data;
+            $scope.gun = $scope.items[1];
          })
         .error(function(data, status) {
-            alert("Error");
-        })
+            alert("Error while loading the weapons!");
+        });
+
+    $scope.getItems = function() {
     };
 }]);

@@ -16,3 +16,4 @@ class Gun(DeclarativeBase, BaseEntity):
     range = Column('range', Integer)
     accuracy = Column('accuracy', Integer)
     rfid_code = Column('rfid_code', Unicode(64))
+    image = Column('image', Unicode(45))

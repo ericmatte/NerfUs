@@ -3,14 +3,14 @@
 </div>
 
 
+<div ng-controller="GunSelector">
 
-<div ng-controller="GunController">
+    <div ng-if="gun != undefined" class="nf-container nf-gun-container">
 
-    <div class="nf-container nf-gun-container">
         <div class="w3-row">
             <div class="w3-col m6">
-                <h2>The Rampage</h2>
-                <img src="/static/nerfus/img/guns/rampage.png" style="opacity: 0.8" width="100%">
+                <h2>{{ gun.name }}</h2>
+                <img src="/static/nerfus/img/guns/{{ gun.image }}" style="opacity: 0.8" width="100%">
             </div>
             <div class="w3-col m6">
                 <div class="nf-specs">
@@ -20,7 +20,7 @@
                         </div>
                         <div class="w3-col m8 s12">
                             <div class="w3-border">
-                                <div class="w3-grey" style="height:24px;width:80%"></div>
+                                <div class="w3-grey" style="height:24px;width:{{ gun.damage }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                         </div>
                         <div class="w3-col m8 s12">
                             <div class="w3-border">
-                                <div class="w3-grey" style="height:24px;width:90%"></div>
+                                <div class="w3-grey" style="height:24px;width:{{ gun.range }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                         </div>
                         <div class="w3-col m8 s12">
                             <div class="w3-border">
-                                <div class="w3-grey" style="height:24px;width:80%"></div>
+                                <div class="w3-grey" style="height:24px;width:{{ gun.accuracy }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -49,12 +49,12 @@
                             Ammunition
                         </div>
                         <div class="w3-col m8 s12">
-                            16 bullets
+                            {{ gun.ammo }} bullets
                         </div>
                     </div>
                 </div>
 
-                <div class="w3-display-container" style="height:250px;">
+                <div class="w3-display-container" style="height:120px;">
                     <div class="w3-display-bottomright">
                         <a href="/#/mode-selection" class="w3-button w3-red w3-xlarge">Next: Select the mode</a>
                     </div>

@@ -8,7 +8,7 @@ from nerfus.flask import app, socket_io
 from models.gun import Gun
 
 
-@app.route('/index', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     # return make_response(open('nerfus/templates/index.html').read())
     return render_template('index.html')
