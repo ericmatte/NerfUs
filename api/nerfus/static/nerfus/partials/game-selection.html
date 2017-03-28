@@ -5,15 +5,20 @@
       Choose a game
     </p>
   </div>
+  <div class="w3-row nf-gun-container">
+    <div ng-repeat="game in games">
+      <div class="w3-col m6">
+        <div class="nf-container nf-game-container">
 
-  <div ng-repeat="game in games" class="nf-container nf-gun-container">
+          <h3>{{ game.name }}</h3>
+          <p>{{ game.description }}</p>
+          <p ng-if="game.max_reflex_time">Max time a target is on: {{ game.max_reflex_time }} seconds</p>
+          <p ng-if="game.number_of_target">Number of target to hit: {{ game.number_of_target }} targets</p>
+          <button class="w3-btn w3-ripple w3-teal" ng-click="selectGame(game.game_id)">Select</button>
+          <br>
 
-      <h3>{{ game.name }}</h3>
-      <p>{{ game.description }}</p>
-      <p ng-if="game.max_reflex_time">Max time a target is on: {{ game.max_reflex_time }} seconds</p>
-      <p ng-if="game.number_of_target">Number of target to hit: {{ game.number_of_target }} targets</p>
-      <button class="w3-btn w3-ripple w3-teal" ng-click="selectGame({{ game.id }})">Select</button>
-      <br>
-
+        </div>
+      </div>
+    </div>
   </div>
 </div>

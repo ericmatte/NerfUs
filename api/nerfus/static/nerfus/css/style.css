@@ -40,6 +40,11 @@ body {
     padding: 20px;
     border-radius: 10px;
 }
+.nf-game-container {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+}
 .nf-specs {
     font-size: 1.2em;
     margin: 20px;

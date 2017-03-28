@@ -18,6 +18,8 @@ myApp.config(['$routeProvider',
             templateUrl: '../static/nerfus/partials/gun-selection.html'
         }).when('/game-selection', {
             templateUrl: '../static/nerfus/partials/game-selection.html'
+        }).when('/ready', {
+            templateUrl: '../static/nerfus/partials/ready.html'
         }).when('/mbed', {
             templateUrl: '../static/nerfus/partials/mbed.html'
         }).when('/about', {
@@ -27,22 +29,6 @@ myApp.config(['$routeProvider',
         });
     }
 ]);
-
-myApp.controller('Example', ['$scope', '$http', function ($scope, $http) {
-    $scope.greeting = 'Hola!';
-
-    $scope.items = [{'name': 'Bazooka'}, {'name': 'MachineGun'}];
-
-    $scope.getItems = function () {
-        $http({method: 'POST', url: '/get-guns'})
-            .success(function (data, status) {
-                $scope.items = data;
-            })
-            .error(function (data, status) {
-                alert("Error");
-            })
-    };
-}]);
 
 /* Gun Selection */
 myApp.controller('GunSelector', ['$scope', '$http', function ($scope, $http) {
@@ -75,7 +61,7 @@ myApp.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
 
     $scope.selectGame = function (gameId) {
         for (var i = 0; i < $scope.games.length; i++) {
-            if ($scope.games[i].id == gameId) {
+            if ($scope.games[i].game_id == gameId) {
                 gameVars.game = $scope.games[i];
                 window.location = '/#/ready';
                 return;
@@ -90,7 +76,9 @@ myApp.controller('mbed', ['$scope', '$http', function ($scope, $http) {
         {title: "Select gun", example: "GUN=34ba12987ffa",
          description: "Command to send when the RFID of a gun has been scanned."},
         {title: "Start", example: "START",
-         description: "Allow the game to start."}];
+         description: "Allow the game to start."},
+        {title: "Mission report", example: "T=12,E=8,A=4,R=2000,GL=12345,S=12668",
+         description: "Target=12, Enemy=8, Allie=4, AverageReflexTimeInMs=2000, GameLengthInMs=12354, Score=12668"}];
 
     $http({method: 'POST', url: '/get-guns'})
         .success(function (data, status) {
