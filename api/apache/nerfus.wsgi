@@ -6,4 +6,4 @@ import os
 sys.path.insert(0, '/opt/flask/nerfus')
 os.environ['MODE'] = 'PROD'
 
-from endless.flask import app as application
+from nerfus.flask import app as application

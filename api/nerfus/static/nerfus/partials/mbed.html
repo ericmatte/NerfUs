@@ -12,7 +12,7 @@
           {{ command.example }}
         </div>
         <button ng-if="command.commands == undefined" class="w3-btn w3-ripple w3-teal"
-                ng-click="sendCommand(command.example)">Send
+                ng-click="sendCommand(command.example, command.at)">Send
         </button>
         <div ng-if="command.commands != undefined" ng-repeat="item in command.commands" class="w3-col m12 w3-margin-bottom">
           <button class="w3-btn w3-ripple w3-teal"

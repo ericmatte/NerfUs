@@ -23,6 +23,12 @@ def value_changed(message):
         emit('select_gun', to_json(gun, False), broadcast=True)
 
 
+@socket_io.on('chat')
+def handle_message(message):
+    print('received message: ' + message)
+    emit('test', message)
+
+
 @socket_io.on('my event')
 def handle_my_custom_event(json):
     print('received json: ' + str(json))

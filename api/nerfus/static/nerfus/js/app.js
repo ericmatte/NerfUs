@@ -78,7 +78,9 @@ myApp.controller('mbed', ['$scope', '$http', function ($scope, $http) {
         {title: "Start", example: "START",
          description: "Allow the game to start."},
         {title: "Mission report", example: "T=12,E=8,A=4,R=2000,GL=12345,S=12668",
-         description: "Target=12, Enemy=8, Allie=4, AverageReflexTimeInMs=2000, GameLengthInMs=12354, Score=12668"}];
+         description: "Target=12, Enemy=8, Allie=4, AverageReflexTimeInMs=2000, GameLengthInMs=12354, Score=12668"},
+        {title: "Chat test", example: "Message test", at: 'chat',
+         description: "Simple way to test socket.io connection. Just send something with the event name 'chat'"}];
 
     $http({method: 'POST', url: '/get-guns'})
         .success(function (data, status) {
@@ -88,7 +90,13 @@ myApp.controller('mbed', ['$scope', '$http', function ($scope, $http) {
             }
         });
 
-    $scope.sendCommand = function (command) {
-        socket.emit('mbed', command);
+    $scope.sendCommand = function (command, at) {
+        at = (at != undefined) ? at: 'mbed';
+        debugger
+        socket.emit(at, command);
     };
+
+    socket.on('test', function (message) {
+        alert(message);
+    });
 }]);
