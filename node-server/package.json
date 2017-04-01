@@ -1,0 +1,19 @@
+{
+  "name": "nerfus",
+  "version": "1.0.0",
+  "description": "A nerf firing range game",
+  "main": "public/js/app.js",
+  "dependencies": {
+    "express": "4.15.2",
+    "mysql": "2.13.0",
+    "path": "0.12.7",
+    "nodemon": "1.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Team P05",
+  "license": "ISC"
+}

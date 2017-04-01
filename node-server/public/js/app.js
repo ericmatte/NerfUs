@@ -1,29 +1,24 @@
 'use strict';   // See note about 'use strict'; below
 
-var myApp = angular.module('myApp', ['ngRoute']);
-
-var socket = io.connect('http://' + document.domain + ':' + location.port);
-socket.on('connect', function () {
-    socket.emit('my event', {data: 'Website connected.'});
-});
+var app = angular.module('myApp', ['ngRoute']);
 
 // Game variables
 var gameVars = {'gun': undefined, 'game': undefined};
 
-myApp.config(['$routeProvider',
+app.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.when('/', {
-            templateUrl: '/static/nerfus/partials/index.html'
+            templateUrl: '../static/templates/partials/index.html'
         }).when('/gun-selection', {
-            templateUrl: '../static/nerfus/partials/gun-selection.html'
+            templateUrl: '../static/templates/partials/gun-selection.html'
         }).when('/game-selection', {
-            templateUrl: '../static/nerfus/partials/game-selection.html'
+            templateUrl: '../static/templates/partials/game-selection.html'
         }).when('/ready', {
-            templateUrl: '../static/nerfus/partials/ready.html'
+            templateUrl: '../static/templates/partials/ready.html'
         }).when('/mbed', {
-            templateUrl: '../static/nerfus/partials/mbed.html'
+            templateUrl: '../static/templates/partials/mbed.html'
         }).when('/about', {
-            templateUrl: '../static/nerfus/partials/about.html'
+            templateUrl: '../static/templates/partials/about.html'
         }).otherwise({
             redirectTo: '/'
         });
@@ -31,7 +26,7 @@ myApp.config(['$routeProvider',
 ]);
 
 /* Gun Selection */
-myApp.controller('GunSelector', ['$scope', '$http', function ($scope, $http) {
+app.controller('GunSelector', ['$scope', '$http', function ($scope, $http) {
     $scope.gun = undefined;
     $http({method: 'POST', url: '/get-guns'})
         .success(function (data, status) {
@@ -41,15 +36,15 @@ myApp.controller('GunSelector', ['$scope', '$http', function ($scope, $http) {
             alert("Error while loading the weapons!");
         });
 
-    socket.on('select_gun', function (selectedGun) {
-        $scope.gun = selectedGun;
-        gameVars.gun = selectedGun;
-        $scope.$apply();
-    });
+    // socket.on('select_gun', function (selectedGun) {
+    //     $scope.gun = selectedGun;
+    //     gameVars.gun = selectedGun;
+    //     $scope.$apply();
+    // });
 }]);
 
 /* Game Selection */
-myApp.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
+app.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
     $scope.games = undefined;
     $http({method: 'POST', url: '/get-games'})
         .success(function (data, status) {
@@ -71,7 +66,7 @@ myApp.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
 }]);
 
 /* mbed Available Commands */
-myApp.controller('mbed', ['$scope', '$http', function ($scope, $http) {
+app.controller('mbed', ['$scope', '$http', function ($scope, $http) {
     $scope.commands = [
         {title: "Select gun", example: "GUN=34ba12987ffa",
          description: "Command to send when the RFID of a gun has been scanned."},
@@ -93,10 +88,10 @@ myApp.controller('mbed', ['$scope', '$http', function ($scope, $http) {
     $scope.sendCommand = function (command, at) {
         at = (at != undefined) ? at: 'mbed';
         debugger
-        socket.emit(at, command);
+        //socket.emit(at, command);
     };
 
-    socket.on('test', function (message) {
-        alert(message);
-    });
+    // socket.on('test', function (message) {
+    //     alert(message);
+    // });
 }]);
