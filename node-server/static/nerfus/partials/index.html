@@ -1,0 +1,39 @@
+<h1>Home Page</h1>
+
+<p>You should head over to the <a href="/#/about">about page</a>.</p>
+
+<h2>Here's an Angular Demo:</h2>
+
+<div>
+    <input type="text" ng-model="yourName" placeholder="Enter a name here">
+    <hr>
+    <h1>Hello {{ yourName }}</h1>
+</div>
+
+<div>
+    {{ greeting }}
+    <p><a href="/#/gun-selection" class="w3-button w3-red w3-xxlarge w3-display-middle">START</a></p>
+    <p><a href="/#/mbed" target="_blank" class="w3-button w3-blue w3-xlarge">mbed examples</a></p>
+    <button type="button" ng-click="getItems()">Get Items</button>
+
+    <ul>
+       <li ng-repeat="item in items"> {{ item.name }}</li>
+    </ul>
+  <h3>TODO</h3>
+<p>
+  <br>- List guns and list games on left
+  <br>- Description on rigth
+  <br>- Summary on ready
+  <br>- Disable START button for 2 seconds
+  <br>- In game text: Game On!
+  <br>- Mission report + List board
+  <br>- Mute/Unmute background music
+  <br>- Save score
+  <br>- Countdown sound
+</p>
+
+<input id="slider1" class="sync" type="range" min="0" max="50" value="{{ slider1 }}"/> <br>
+<input id="slider2" class="sync" type="range" min="0" max="50" value="{{ slider2 }}"/>
+
+<input id="txt1" class="sync" type="text"/>
+</div>

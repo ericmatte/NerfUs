@@ -1,0 +1,70 @@
+<div ng-controller="GunSelector">
+
+  <div class="w3-container nf-title nf-container">
+    <p>
+      Choose your weapon
+    </p>
+  </div>
+
+  <div ng-if="gun != undefined" class="nf-container nf-gun-container">
+
+    <div class="w3-row">
+      <div class="w3-col m6">
+        <h2>{{ gun.name }}</h2>
+        <img ng-src="/static/nerfus/img/guns/{{ gun.image }}" style="opacity: 0.8" width="100%">
+      </div>
+      <div class="w3-col m6">
+        <div class="nf-specs">
+          <p>{{ gun.description }}</p>
+          <div class="w3-row">
+            <div class="w3-col m4 s12">
+              Damage
+            </div>
+            <div class="w3-col m8 s12">
+              <div class="w3-border">
+                <div class="w3-grey" style="height:24px;width:{{ gun.damage }}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="w3-row">
+            <div class="w3-col m4 s12">
+              Range
+            </div>
+            <div class="w3-col m8 s12">
+              <div class="w3-border">
+                <div class="w3-grey" style="height:24px;width:{{ gun.range }}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="w3-row">
+            <div class="w3-col m4 s12">
+              Accuracy
+            </div>
+            <div class="w3-col m8 s12">
+              <div class="w3-border">
+                <div class="w3-grey" style="height:24px;width:{{ gun.accuracy }}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="w3-row">
+            <div class="w3-col m4 s12">
+              Ammunition
+            </div>
+            <div class="w3-col m8 s12">
+              {{ gun.ammo }} bullets
+            </div>
+          </div>
+        </div>
+
+        <div class="w3-display-container" style="height:120px;">
+          <div class="w3-display-bottomright">
+            <a href="/#/game-selection" class="w3-button w3-red w3-xlarge">Next: Select the mode</a>
+          </div>
+        </div>
+        <div class="w3-container">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
