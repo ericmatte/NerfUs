@@ -5,7 +5,7 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
     // Game variables
     $rootScope.gameVars = {'gun': undefined, 'game': undefined};
 
-    $rootScope.ws = $websocket.$new('ws://' + document.domain + ':' + (parseInt(location.port)+1)); // instance of ngWebsocket, handled by $websocket service
+    $rootScope.ws = $websocket.$new('ws://' + document.domain + ':5050'); // instance of ngWebsocket, handled by $websocket service
 
     $rootScope.ws.$on('$open', function () {
         console.log('Websocket connected.');
