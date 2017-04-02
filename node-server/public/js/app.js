@@ -2,6 +2,9 @@
 
 var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
 .run(function ($rootScope, $websocket) {
+    // Game variables
+    $rootScope.gameVars = {'gun': undefined, 'game': undefined};
+
     $rootScope.ws = $websocket.$new('ws://' + document.domain + ':' + (parseInt(location.port)+1)); // instance of ngWebsocket, handled by $websocket service
 
     $rootScope.ws.$on('$open', function () {
@@ -13,8 +16,6 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
     });
 });
 
-// Game variables
-var gameVars = {'gun': undefined, 'game': undefined};
 
 app.config(['$routeProvider',
     function ($routeProvider) {
@@ -37,27 +38,25 @@ app.config(['$routeProvider',
 ]);
 
 /* Gun Selection */
-app.controller('GunSelector', ['$scope', '$http', function ($scope, $http) {
-    $scope.gun = undefined;
+app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+    $rootScope.gun = undefined;
     $http({method: 'POST', url: '/get-guns'})
         .success(function (data, status) {
-            $scope.gun = data[0];
+            $rootScope.gun = data[0];
         })
         .error(function (data, status) {
             alert("Error while loading the weapons!");
         });
 
 
-    $rootScope.ws.$on('select_gun', function (message) {
-        debugger
-        $scope.gun = selectedGun;
-        gameVars.gun = selectedGun;
+    $rootScope.ws.$on('select_gun', function (selectedGun) {
+        $rootScope.gun = selectedGun;
         $scope.$apply();
     });
 }]);
 
 /* Game Selection */
-app.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
+app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.games = undefined;
     $http({method: 'POST', url: '/get-games'})
         .success(function (data, status) {
@@ -70,7 +69,7 @@ app.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
     $scope.selectGame = function (gameId) {
         for (var i = 0; i < $scope.games.length; i++) {
             if ($scope.games[i].game_id == gameId) {
-                gameVars.game = $scope.games[i];
+                $rootScope.gameVars.game = $scope.games[i];
                 window.location = '/#/ready';
                 return;
             }
@@ -82,13 +81,13 @@ app.controller('GameSelector', ['$scope', '$http', function ($scope, $http) {
 app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.commands = [
         {title: 'Select gun', description: 'Command to send when the RFID of a gun has been scanned.',
-         event: 'GUN', data: '34ba12987ffa'},
+         event: 'gun', data: '34ba12987ffa'},
         {title: 'Start game', description: 'Allow the game to start.',
-         event: 'START', data: ''},
+         event: 'start', data: ''},
         {title: 'Mission report', description: 'Target=12, Enemies=8, Allies=4, AverageReflexTimeInMs=2000, GameLengthInMs=12354, Score=12668',
-         event: 'REPORT', data: '{"Target":12, "Enemies":8, "Allies":4, "AverageReflexTimeInMs":2000, "GameLengthInMs":12354, "Score":12668}'},
+         event: 'report', data: '{"Target":12, "Enemies":8, "Allies":4, "AverageReflexTimeInMs":2000, "GameLengthInMs":12354, "Score":12668}'},
         {title: 'Chat test', description: 'Simple way to test the websocket connection. Just send something with the event name "chat". The server will respond it back to you. You can also try sending a simple string with no event defined.',
-         event: 'CHAT', data: 'Message test'}];
+         event: 'chat', data: 'Message test'}];
 
     $http({method: 'POST', url: '/get-guns'})
         .success(function (data, status) {

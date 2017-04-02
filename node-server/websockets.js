@@ -1,49 +1,53 @@
 var server = require('./server');
-var ws = require("nodejs-websocket");
+const WebSocket = require('ws');
 
-// Websocket
-var wsServer = ws.createServer(function (conn) {
+const wss = new WebSocket.Server({ port: server.wsPort });
+console.log('Websocket listening @ ws://localhost:' + server.wsPort + '/')
+
+function assembleSocket(event, data) {
+    return '{"event":"'+event+'","data":'+JSON.stringify(data)+'}';
+}
+
+// Broadcast to all.
+wss.broadcast = function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(data);
+        }
+    });
+};
+
+wss.on('connection', function connection(ws) {
     console.log("New websocket connection");
 
-    conn.on("text", function (str) {
-        console.log("Received " + str);
+    ws.on('message', function incoming(message) {
+        console.log("Received " + message);
         try {
-            var socket = JSON.parse(str);
-            handleSocket(socket.event, socket.data, conn);
+            var socket = JSON.parse(message);
+            handleSocket(socket.event, socket.data, ws);
         }
         catch(err) {
             // Scream server example: "hi" -> "HI!!!" 
-            conn.sendText(JSON.stringify(str).toUpperCase()+"!!!");
+            ws.send(JSON.stringify(message).toUpperCase()+"!!!");
         }
     });
-
-    conn.on("close", function (code, reason) {
-        console.log("Connection closed");
-    });
-
-}).listen(server.wsPort, function(){
-    console.log('Websocket listening @ ws://localhost:' + server.wsPort + '/')
 });
 
-function broadcast(msg) {
-    wsServer.connections.forEach(function (conn) {
-        conn.sendText(msg)
-    });
-}
-
-function handleSocket(event, data, conn) {
+function handleSocket(event, data, ws) {
     // ws form : {"event":"chat","data":"Message test"}
     switch(event.toLowerCase()) {
         case 'gun':
-            var gun = server.databaseQuery(res, 'SELECT * FROM nerfus.gun WHERE gun.rfid_code = ?', data);
-            console.log(JSON.stringify(gun));
-            
+            var query = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
+            var query = server.connection.query(query, data, function(err, gun) {
+                if (gun) {
+                    wss.broadcast(assembleSocket('select_gun', gun[0]));
+                }
+            });
             break;
 
-        case 'test':
         case 'chat':
         default:
-            conn.sendText('{"event":"'+event+'","data":'+JSON.stringify(data)+'}');
+            ws.send('{"event":"'+event+'","data":'+JSON.stringify(data)+'}');
             break;
     }
 }
