@@ -8,16 +8,22 @@
       <div class="w3-container w3-white w3-round w3-border w3-margin w3-padding">
         <h3>{{ command.title }}</h3>
         <p>{{ command.description }}</p>
-        <div class="w3-panel w3-black w3-round-xlarge">
-          {{ command.example }}
+
+        <div ng-if="command.data == undefined" class="w3-panel w3-black w3-round-xlarge">
+          {"event":"{{ command.event }}"}
         </div>
+        <div ng-if="command.data != undefined" class="w3-panel w3-black w3-round-xlarge">
+          {"event":"{{ command.event }}","data":"{{ command.data }}"}
+        </div>
+
         <button ng-if="command.commands == undefined" class="w3-btn w3-ripple w3-teal"
-                ng-click="sendCommand(command.example, command.at)">Send
+                ng-click="sendCommand(command.event, command.data)">Send
         </button>
         <div ng-if="command.commands != undefined" ng-repeat="item in command.commands" class="w3-col m12 w3-margin-bottom">
           <button class="w3-btn w3-ripple w3-teal"
-                  ng-click="sendCommand(item)">> {{ item }}</button>
+                  ng-click="sendCommand(command.event, item)">{{ command.event }} > {{ item }}</button>
         </div>
+
         <br>
       </div>
     </div>

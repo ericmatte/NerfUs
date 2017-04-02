@@ -1,41 +1,54 @@
 var express = require('express'); 
 var mysql = require('mysql');
 var app = express();
-var port = 8080;
+var port = process.env.PORT || 5000
+var wsPort = port + 1;
 
+// MySQL connection
 var connection = mysql.createConnection({
-     host: 'localhost',
-     user: 'dbAdmin',
-     password: 'Glad0Scake',
-     database: 'nerfus'
+    host: 'localhost',
+    user: 'dbAdmin',
+    password: 'Glad0Scake',
+    database: 'nerfus'
 });
 connection.connect();
 
-app.post('/api/book', function(req, res, next){
-   var cope = req.body.params;
-   var query = connection.query('insert into cope set ?', cope, function(err, result) {
-     if (err) {
-       console.error(err);
-       return res.send(err);
-     } else {
-       return res.send('Ok');
-     }
-   });
-});
+/** Return the result from the query to the database */
+function databaseQuery(query, params) {
+    var query = connection.query(query, params, function(err, result) {
+        return result;
+    });
+}
 
+/** Return a server response containing the result */
+function databaseQuery(res, query, params) {
+    var query = connection.query(query, params, function(err, result) {
+        if (err) { 
+            console.error(err);
+            return res.send(400, err);
+        } else {
+            return res.send(200, result);
+        }
+    });
+}
+
+// Serving server files and app properties
+app.set('port', port);
 app.use('/node_modules',  express.static(__dirname + '/node_modules'));
 app.use("/static", express.static(__dirname + '/public'));
 
-app.get('/',function(req,res){
-    res.sendFile('index.html',{'root': __dirname + '/public/templates'});
-})
+module.exports = {
+    app: app,
+    connection: connection,
+    databaseQuery: databaseQuery,
+    wsPort: wsPort
+};
+require('./routes');
+require('./websockets');
 
-app.listen(port,function(){
-    console.log('Node server running @ http://localhost:' + port)
+// Starting server
+//var http = require('http');
+//http.createServer(app).listen(app.get('port'), function() {
+app.listen(app.get('port'), function(){
+    console.log('Node server running @ http://localhost:' + app.get('port'))
 });
-
-// var http = require('http');
-// var app = require('./app');
-
-// http.createServer(app.handleRequest).listen(9090, '127.0.0.1');
-// console.log('Server running at 127.0.0.1:9090/');
