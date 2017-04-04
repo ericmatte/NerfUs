@@ -2,6 +2,10 @@
 
 var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
 .run(function ($rootScope, $websocket) {
+    $rootScope.range = function(num) {
+        return new Array(num);   
+    }
+    
     // Game variables
     $rootScope.gameVars = {'gun': undefined, 'game': undefined};
 
@@ -58,10 +62,13 @@ app.controller('StartingScreen', ['$scope', '$rootScope', function ($scope, $roo
 
 /* Gun Selection */
 app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+    $scope.guns = undefined;
     $rootScope.gun = undefined;
+
     $http({method: 'POST', url: '/get-guns'})
         .success(function (data, status) {
-            $rootScope.gun = data[0];
+            $scope.guns = data;
+            $rootScope.gun = $scope.guns[0];
         })
         .error(function (data, status) {
             alert("Error while loading the weapons!");

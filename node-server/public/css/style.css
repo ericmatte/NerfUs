@@ -53,17 +53,57 @@ div.columns figure {
 
 .nf-container {
     background-color: rgba(0, 0, 0, 0.80) !important;
-    -webkit-box-shadow: 0px 0px 25px 0px rgba(255, 255, 255, 0.6);
-    -moz-box-shadow: 0px 0px 25px 0px rgba(255, 255, 255, 0.6);
-    box-shadow: 0px 0px 25px 0px rgba(255, 255, 255, 0.6);
-    margin-bottom: 60px;
+    -webkit-box-shadow: 0px 0px 25px 0px rgba(210, 210, 210, 0.5);
+    -moz-box-shadow: 0px 0px 25px 0px rgba(210, 210, 210, 0.5);
+    box-shadow: 0px 0px 25px 0px rgba(210, 210, 210, 0.5);
+    margin-bottom: 30px;
 }
-.nf-title p {
-    text-align: center;
-    font-size: 3em;
-    margin: 15px;
+
+.nf-title.nf-container {
+    padding-left: 3em;
 }
-.nf-gun-container {
+
+.nf-title {
+    text-transform: uppercase;
+    /*font-size: 3em;*/
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+.nf-gun-container .nf-bullet {
+    margin: 0 2pt;
+    width: auto;
+    height: 20pt;
+}
+
+.nf-gun-container .nf-gun-image {
+    max-width: 100%;
+    opacity: 0.8;
+}
+
+li .nf-gun-image {
+    width: 80pt;
+    float: right;
+}
+
+table.nf-gun-specs {
+    width: 100%;
+}
+
+table.nf-gun-specs td {
+    white-space: nowrap;
+}
+
+table.nf-gun-specs td:last-child {
+    width: 100%;
+}
+
+table.nf-gun-specs tr td:first-child {
+    text-transform: uppercase;
+    padding: 5pt;
+}
+
+.nf-gun-containers {
     margin-left: 120px;
     margin-right: 120px;
     padding: 20px;
