@@ -5,7 +5,8 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
     // Game variables
     $rootScope.gameVars = {'gun': undefined, 'game': undefined};
 
-    $rootScope.ws = $websocket.$new('ws://' + document.domain + ':8000'); // instance of ngWebsocket, handled by $websocket service
+    $rootScope.websocketUrl = 'ws://' + document.domain + ':8000/';
+    $rootScope.ws = $websocket.$new($rootScope.websocketUrl); // instance of ngWebsocket, handled by $websocket service
 
     $rootScope.ws.$on('$open', function () {
         console.log('Websocket connected.');
@@ -14,11 +15,26 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
     $rootScope.ws.$on('$close', function () {
         console.log('Noooooooooou, I want to have more fun with Websocket, but the connection is now close. Damn it!');
     });
+    
+    // Route selection on 'start' websocket
+    $rootScope.ws.$on('start', function () {
+        switch(window.location.hash) {
+            case "#/":
+                window.location = '/#/gun-selection';
+                break;
+            case "#/gun-selection":
+                window.location = '/#/game-selection';
+                break;
+            case "#/game-selection":
+                window.location = '/#/ready';
+                break;
+            default:
+        }
+    });
 });
 
 
-app.config(['$routeProvider',
-    function ($routeProvider) {
+app.config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: '../static/templates/partials/index.html'
         }).when('/gun-selection', {
@@ -29,13 +45,16 @@ app.config(['$routeProvider',
             templateUrl: '../static/templates/partials/ready.html'
         }).when('/mbed', {
             templateUrl: '../static/templates/partials/mbed.html'
-        }).when('/about', {
-            templateUrl: '../static/templates/partials/about.html'
         }).otherwise({
             redirectTo: '/'
         });
     }
 ]);
+
+/* Starting screen (Index) */
+app.controller('StartingScreen', ['$scope', '$rootScope', function ($scope, $rootScope) {
+
+}]);
 
 /* Gun Selection */
 app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
@@ -52,6 +71,10 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
     $rootScope.ws.$on('select_gun', function (selectedGun) {
         $rootScope.gun = selectedGun;
         $scope.$apply();
+    });
+
+    $scope.$on('$routeChangeStart', function(next, current) {
+        $rootScope.ws.$un('select_gun'); // Detaching scope websocket
     });
 }]);
 
@@ -80,10 +103,10 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
 /* mbed Available Commands */
 app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.commands = [
+        {title: 'Start game', description: 'Allow the game to start. Also used to navigate between menus.',
+         event: 'start'},
         {title: 'Select gun', description: 'Command to send when the RFID of a gun has been scanned.',
          event: 'gun', data: '34ba12987ffa'},
-        {title: 'Start game', description: 'Allow the game to start.',
-         event: 'start', data: ''},
         {title: 'Mission report', description: 'Target=12, Enemies=8, Allies=4, AverageReflexTimeInMs=2000, GameLengthInMs=12354, Score=12668',
          event: 'report', data: '{"Target":12, "Enemies":8, "Allies":4, "AverageReflexTimeInMs":2000, "GameLengthInMs":12354, "Score":12668}'},
         {title: 'Chat test', description: 'Simple way to test the websocket connection. Just send something with the event name "chat". The server will respond it back to you. You can also try sending a simple string with no event defined.',
@@ -91,9 +114,9 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
 
     $http({method: 'POST', url: '/get-guns'})
         .success(function (data, status) {
-            $scope.commands[0]['commands'] = [];
+            $scope.commands[1]['commands'] = [];
             for (var i = 0; i < data.length; i++) {
-                $scope.commands[0]['commands'].push(data[i].rfid_code);
+                $scope.commands[1]['commands'].push(data[i].rfid_code);
             }
         });
 
@@ -107,5 +130,9 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
 
     $rootScope.ws.$on('chat', function (message) {
         alert(message);
+    });
+
+    $scope.$on('$routeChangeStart', function(next, current) {
+        $rootScope.ws.$un('chat'); // Detaching scope websocket
     });
 }]);

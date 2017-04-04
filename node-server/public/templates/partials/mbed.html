@@ -1,32 +1,45 @@
-<div class="w3-container" ng-controller="mbed">
+<div ng-controller="mbed" class="">
 
-  <h1>Welcome to the mbed socket.io showcase!</h1>
-  <p>This page let you see and test every socket message that an mbed can send to the server.</p>
+  <div class="w3-container" style="text-align: center">
+    <h1>Welcome to the mbed socket.io showcase!</h1>
+    <p>This page let you see and test every socket message that an mbed can send to the server.</p>
+    <p>Websocket server url: <b>{{ websocketUrl }}</b></p>
+  </div>
+  <div class="columns">
 
-  <div class="w3-row">
-    <div class="w3-col m4 l3" ng-repeat="command in commands">
-      <div class="w3-container w3-white w3-round w3-border w3-margin w3-padding">
-        <h3>{{ command.title }}</h3>
-        <p>{{ command.description }}</p>
+    <figure class="w3-white w3-round w3-border" ng-repeat="command in commands">
+      <h3>{{ command.title }}</h3>
+      <p>{{ command.description }}</p>
 
-        <div ng-if="command.data == undefined" class="w3-panel w3-black w3-round-xlarge">
-          {"event":"{{ command.event }}"}
-        </div>
-        <div ng-if="command.data != undefined" class="w3-panel w3-black w3-round-xlarge">
-          {"event":"{{ command.event }}","data":"{{ command.data }}"}
-        </div>
-
-        <button ng-if="command.commands == undefined" class="w3-btn w3-ripple w3-teal"
-                ng-click="sendCommand(command.event, command.data)">Send
-        </button>
-        <div ng-if="command.commands != undefined" ng-repeat="item in command.commands" class="w3-col m12 w3-margin-bottom">
-          <button class="w3-btn w3-ripple w3-teal"
-                  ng-click="sendCommand(command.event, item)">{{ command.event }} > {{ item }}</button>
-        </div>
-
-        <br>
+      <div ng-if="command.data == undefined" class="w3-panel w3-black w3-round-xlarge">
+        {"event":"{{ command.event }}"}
       </div>
-    </div>
+      <div ng-if="command.data != undefined" class="w3-panel w3-black w3-round-xlarge">
+        {"event":"{{ command.event }}","data":"{{ command.data }}"}
+      </div>
+
+      <button ng-if="command.commands == undefined" class="w3-btn w3-ripple w3-teal" ng-click="sendCommand(command.event, command.data)">Send
+        </button>
+      <div ng-if="command.commands != undefined" ng-repeat="item in command.commands" class="w3-col m12 w3-margin-bottom">
+        <button class="w3-btn w3-ripple w3-teal" ng-click="sendCommand(command.event, item)">{{ command.event }} > {{ item }}</button>
+      </div>
+    </figure>
+
+  </div>
+
+  <div class="w3-container" style="text-align: center">
+    <h3>TODO</h3>
+    <p>
+      <br>- List guns and list games on left
+      <br>- Description on rigth
+      <br>- Summary on ready
+      <br>- Disable START button for 2 seconds
+      <br>- In game text: Game On!
+      <br>- Mission report + List board
+      <br>- Mute/Unmute background music
+      <br>- Save score
+      <br>- Countdown sound
+    </p>
   </div>
 
 </div>

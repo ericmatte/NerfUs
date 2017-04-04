@@ -5,7 +5,7 @@ const wss = new WebSocket.Server({ port: server.wsPort });
 console.log('Websocket listening @ ws://localhost:' + server.wsPort + '/')
 
 function assembleSocket(event, data) {
-    return '{"event":"'+event+'","data":'+JSON.stringify(data)+'}';
+    return '{"event":"' + event + '","data":' + JSON.stringify(data) + '}';
 }
 
 // Broadcast to all.
@@ -26,19 +26,19 @@ wss.on('connection', function connection(ws) {
             var socket = JSON.parse(message);
             handleSocket(socket.event, socket.data, ws);
         }
-        catch(err) {
+        catch (err) {
             // Scream server example: "hi" -> "HI!!!" 
-            ws.send(JSON.stringify(message).toUpperCase()+"!!!");
+            ws.send(JSON.stringify(message).toUpperCase() + "!!!");
         }
     });
 });
 
 function handleSocket(event, data, ws) {
     // ws form : {"event":"chat","data":"Message test"}
-    switch(event.toLowerCase()) {
+    switch (event.toLowerCase()) {
         case 'gun':
             var query = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
-            var query = server.connection.query(query, data, function(err, gun) {
+            var query = server.connection.query(query, data, function (err, gun) {
                 if (gun) {
                     wss.broadcast(assembleSocket('select_gun', gun[0]));
                 }
@@ -46,8 +46,14 @@ function handleSocket(event, data, ws) {
             break;
 
         case 'chat':
+            ws.send('{"event":"' + event + '","data":' + JSON.stringify(data) + '}');
+            break;
         default:
-            ws.send('{"event":"'+event+'","data":'+JSON.stringify(data)+'}');
+            if (data === undefined) {
+                wss.broadcast('{"event":"' + event + '"}');
+            } else {
+                wss.broadcast('{"event":"' + event + '","data":' + JSON.stringify(data) + '}');
+            }
             break;
     }
 }
