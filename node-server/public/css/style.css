@@ -20,6 +20,16 @@ body {
 .nf-logo img {
     vertical-align: middle;
 }
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
 /* END OF Main CSS */
 
 
@@ -65,9 +75,29 @@ div.columns figure {
 
 .nf-title {
     text-transform: uppercase;
-    /*font-size: 3em;*/
     padding-top: 0.2em;
     padding-bottom: 0.2em;
+}
+
+/* Gun Container */
+.nf-gun-container {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.nf-gun-container .nf-title {
+    -webkit-box-shadow: 0px 0px 30px 0px rgba(255,255,255,1);
+    -moz-box-shadow: 0px 0px 30px 0px rgba(255,255,255,1);
+    box-shadow: 0px 0px 30px 0px rgba(255,255,255,1);
+    background-color: rgba(250, 250, 250, 0.82);
+    color: black;
+    padding: 8pt;
+    display: inline-block;
+    font-weight: 600;
+    border-radius: 1pt;
+}
+
+.nf-gun-container p {
+    padding-left: 8pt;
 }
 
 .nf-gun-container .nf-bullet {
@@ -80,16 +110,37 @@ div.columns figure {
     max-width: 100%;
     opacity: 0.8;
 }
+/* END OF Gun Container */
 
-li .nf-gun-image {
+/* Gun List */
+.nf-gun-list li {
+    border-top: 2pt solid #000 !important;
+    border-bottom: 2pt solid #000 !important;
+    border-bottom: none;
+    background-color: rgba(162, 162, 162, 0.17);
+    margin: 5pt 5pt;
+}
+
+.nf-gun-list li:hover {
+    border-top: 2pt solid #ff0000 !important;
+    border-bottom: 2pt solid #ff0000 !important;
+    background-color: rgba(162, 162, 162, 0.51);
+    cursor: pointer;
+}
+
+.nf-gun-list li.selected {
+    border-top: 2pt solid #ec6911 !important;
+    border-bottom: 2pt solid #ec6911 !important;
+    background-color: rgba(162, 162, 162, 0.34);
+}
+
+.nf-gun-list img {
     width: 80pt;
     float: right;
 }
+/* END OF Gun List */
 
-table.nf-gun-specs {
-    width: 100%;
-}
-
+/* Gun Specs: Damage, Range, Accuracy, ... */
 table.nf-gun-specs td {
     white-space: nowrap;
 }
@@ -102,13 +153,8 @@ table.nf-gun-specs tr td:first-child {
     text-transform: uppercase;
     padding: 5pt;
 }
+/* END OF Gun Specs*/
 
-.nf-gun-containers {
-    margin-left: 120px;
-    margin-right: 120px;
-    padding: 20px;
-    border-radius: 10px;
-}
 .nf-game-container {
     margin: 20px;
     padding: 20px;
