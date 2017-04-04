@@ -62,13 +62,13 @@ app.controller('StartingScreen', ['$scope', '$rootScope', function ($scope, $roo
 
 /* Gun Selection */
 app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+    $scope.current = 0;
     $scope.guns = undefined;
-    $rootScope.gun = undefined;
+    $rootScope.game.gun = undefined;
 
     $http({ method: 'POST', url: '/get-guns' })
         .success(function (data, status) {
             $scope.guns = data;
-            $scope.selectGun($scope.guns[0]);
         })
         .error(function (data, status) {
             alert("Error while loading the weapons!");
@@ -77,10 +77,7 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
     $scope.selectGun = function (gun) {
         for (var i = 0; i < $scope.guns.length; i++) {
             if ($scope.guns[i].gun_id == gun.gun_id) {
-                $scope.guns[i].selected = true;
-                $rootScope.game.gun = $scope.guns[i];
-            } else {
-                $scope.guns[i].selected = undefined;
+                $scope.current = i;
             }
         }
     };
@@ -90,14 +87,26 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
         $scope.$apply();
     });
 
+    $rootScope.ws.$on('navigate', function (position) {
+        var i = $scope.current + ((position == 'next') ? 1 : -1);
+        i = (i<0) ? 0 : (i>=$scope.guns.length) ? $scope.guns.length-1 : i;
+        $scope.current = i;
+        $scope.$apply();
+    });
+
     $scope.$on('$routeChangeStart', function (next, current) {
+        $rootScope.game.gun = $scope.guns[$scope.current]; // Save the selected gun
         $rootScope.ws.$un('select_gun'); // Detaching scope websocket
+        $rootScope.ws.$un('navigate'); // Detaching scope websocket
     });
 }]);
 
 /* Game Selection */
 app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+    $scope.current = 0;
     $scope.games = undefined;
+    $rootScope.game.game = undefined;
+
     $http({ method: 'POST', url: '/get-games' })
         .success(function (data, status) {
             $scope.games = data;
@@ -106,15 +115,25 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
             alert("Error while loading all games!");
         });
 
-    $scope.selectGame = function (gameId) {
+    $scope.selectGame = function (game) {
         for (var i = 0; i < $scope.games.length; i++) {
-            if ($scope.games[i].game_id == gameId) {
-                $rootScope.game.game = $scope.games[i];
-                window.location = '/#/ready';
-                return;
+            if ($scope.games[i].game_id == game.game_id) {
+                $scope.current = i;
             }
         }
     };
+
+    $rootScope.ws.$on('navigate', function (position) {
+        var i = $scope.current + ((position == 'next') ? 1 : -1);
+        i = (i<0) ? 0 : (i>=$scope.games.length) ? $scope.games.length-1 : i;
+        $scope.current = i;
+        $scope.$apply();
+    });
+
+    $scope.$on('$routeChangeStart', function (next, current) {
+        $rootScope.game.game = $scope.games[$scope.current]; // Save the selected game
+        $rootScope.ws.$un('navigate'); // Detaching scope websocket
+    });
 }]);
 
 /* mbed Available Commands */
@@ -123,6 +142,10 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
         {
             title: 'Start game', description: 'Allow the game to start. Also used to navigate between menus.',
             event: 'start'
+        },
+        {
+            title: 'Navigate', description: 'Allow navigation between items in menu.',
+            event: 'navigate', data: 'next', commands: ['previous', 'next']
         },
         {
             title: 'Select gun', description: 'Command to send when the RFID of a gun has been scanned.',
@@ -139,9 +162,11 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
 
     $http({ method: 'POST', url: '/get-guns' })
         .success(function (data, status) {
-            $scope.commands[1]['commands'] = [];
+            var gunIndex = $scope.commands.map(function(e) { return e.event; }).indexOf('gun');
+
+            $scope.commands[gunIndex]['commands'] = [];
             for (var i = 0; i < data.length; i++) {
-                $scope.commands[1]['commands'].push(data[i].rfid_code);
+                $scope.commands[gunIndex]['commands'].push(data[i].rfid_code);
             }
         });
 
