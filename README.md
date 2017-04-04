@@ -1,10 +1,14 @@
-<p>#NerfUS:&nbsp;A Shooting Range Game</p>
+#NerfUS:&nbsp;A Shooting Range Game
 
-<p><span style="font-size: 24px;">S5 Project, Team P05</span></p>
+<h3><span style="font-size: 24px;">S5 Project, Team P05</span></h3>
 
 <p>Theses are the steps to run locally the server on your computer.</p>
 
 <p>*<em>This guide may not be complete. Feel free to change any section for an easier configuration.</em></p>
+
+<p>
+	<br>
+</p>
 
 <p><strong><span style="font-size: 18px;">1. Download NerfUS</span></strong></p>
 
@@ -14,9 +18,9 @@
 	<br>
 </p>
 
-<p><strong><span style="font-size: 18px;">2. Installing <a href="Node.JS">Node.JS</a></span></strong></p>
+<p><strong><span style="font-size: 18px;">2. Installing Node.JS</span></strong></p>
 
-<p>- Grab the latest <strong>LTS&nbsp;</strong>version of <a href="Node.JS">Node.JS</a> from the web site <a href="https://nodejs.org/en/">https://nodejs.org/en/</a>.</p>
+<p>- Grab the latest <strong>LTS&nbsp;</strong>version of Node.JS from the web site <a href="https://nodejs.org/en/">https://nodejs.org/en/</a>.</p>
 
 <p>- Run the installer</p>
 
@@ -35,8 +39,7 @@
 <p>In your CMD, simply run this command:</p>
 
 <blockquote>
-
-	<p><span style="font-family: Verdana,Geneva,sans-serif;">npm install</span></p>
+	npm install
 </blockquote>
 
 <p>This will download all the dependencies from the package.json file.</p>
@@ -53,7 +56,7 @@
 
 <p>Download &amp; install<strong>&nbsp;Bitvise Tunnelier&nbsp;</strong>here : <a href="https://www.bitvise.com/download-area">https://www.bitvise.com/download-area</a>.</p>
 
-<p>Now, in the root folder of the project, their is a file named <strong><a href="bitvise-tunnel.tlp">bitvise-tunnel.tlp</a></strong>.</p>
+<p>Now, in the root folder of the project, their is a file named <strong>bitvise-tunnel.tlp</strong>.</p>
 
 <p>Click on the file, and press login in Bitvise.</p>
 
@@ -72,8 +75,7 @@
 <p>On the first on, run this:</p>
 
 <blockquote>
-
-	<p><span style="font-family: Verdana,Geneva,sans-serif;">node-inspector</span></p>
+	node-inspector
 </blockquote>
 
 <p>It will show you an local web address. This is the <strong>server-side debugging tool</strong>. Use chrome for better debugging.</p>
@@ -81,8 +83,7 @@
 <p>On the second CMD, run this:</p>
 
 <blockquote>
-
-	<p><span style="font-family: Verdana,Geneva,sans-serif;">nodemon --debug server.js</span></p>
+	nodemon --debug server.js
 </blockquote>
 
 <p>Nodemon will start the node server, and also listen for any changes in the code. When that happens, it will automatically restart the server.</p>
