@@ -80,11 +80,11 @@ div.columns figure {
 }
 
 /* Gun Container */
-.nf-gun-container {
+.nf-container .nf-item-desc {
     background-color: rgba(255, 255, 255, 0.03);
 }
 
-.nf-gun-container .nf-title {
+.nf-container .nf-item-desc .nf-title {
     -webkit-box-shadow: 0px 0px 30px 0px rgba(255,255,255,1);
     -moz-box-shadow: 0px 0px 30px 0px rgba(255,255,255,1);
     box-shadow: 0px 0px 30px 0px rgba(255,255,255,1);
@@ -96,17 +96,18 @@ div.columns figure {
     border-radius: 1pt;
 }
 
-.nf-gun-container p {
+.nf-container .nf-item-desc p,
+.nf-container .nf-item-desc h4 {
     padding-left: 8pt;
 }
 
-.nf-gun-container .nf-bullet {
+.nf-container .nf-item-desc .nf-bullet {
     margin: 0 2pt;
     width: auto;
     height: 20pt;
 }
 
-.nf-gun-container .nf-gun-image {
+.nf-container .nf-item-desc .nf-gun-image {
     max-width: 100%;
     opacity: 0.8;
 }
@@ -154,6 +155,10 @@ table.nf-gun-specs tr td:first-child {
     padding: 5pt;
 }
 /* END OF Gun Specs*/
+
+.nf-item-desc h3 {
+    color: #ec6911;
+}
 
 .nf-game-container {
     margin: 20px;

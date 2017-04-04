@@ -15,52 +15,52 @@
       </ul>
     </div>
 
-    <div ng-if="guns[current] != undefined" class="w3-col m7 l8 nf-gun-container w3-padding">
+    <div ng-if="guns[current] != undefined" class="w3-col m7 l8 nf-item-desc w3-padding">
 
       <h2 class="nf-title">{{ guns[current].name }}</h2>
-      <p>{{ guns[current].description }}</p>
+      <h4>{{ guns[current].description }}</h4>
       <p style="text-align: center;">
-      <img class="nf-gun-image" ng-src="/static/img/guns/{{ guns[current].image }}">
+        <img class="nf-gun-image" ng-src="/static/img/guns/{{ guns[current].image }}">
       </p>
       <div class="w3-row">
-      <div class="w3-col m12 l6">
-      <table class="nf-gun-specs">
-        <tr>
-          <td>Damage</th>
-          <td>
-            <div class="w3-border">
-              <div class="w3-grey" style="height:24px;width:{{ guns[current].damage }}%"></div>
-            </div>
-          </th>
-        </tr>
-        <tr>
-          <td>Range</th>
-          <td>
-            <div class="w3-border">
-              <div class="w3-grey" style="height:24px;width:{{ guns[current].range }}%"></div>
-            </div>
-          </th>
-        </tr>
-        <tr>
-          <td>Accuracy</th>
-          <td>
-            <div class="w3-border">
-              <div class="w3-grey" style="height:24px;width:{{ guns[current].accuracy }}%"></div>
-            </div>
-          </th>
-        </tr>
-        <tr>
-          <td>Ammo</th>
-          <td>
-            <img class="nf-bullet" src="/static/img/bullet.png" ng-repeat="i in range(guns[current].ammo) track by $index">
-          </th>
-        </tr>
-      </table>
-    </div>
-    </div>
+        <div class="w3-col m12 l6">
+          <table class="nf-gun-specs">
+            <tr>
+              <td>Damage</td>
+              <td>
+                <div class="w3-border">
+                  <div class="w3-grey" style="height:24px;width:{{ guns[current].damage }}%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Accuracy</td>
+              <td>
+                <div class="w3-border">
+                  <div class="w3-grey" style="height:24px;width:{{ guns[current].accuracy }}%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Fire Rate</td>
+              <td>
+                <div class="w3-border">
+                  <div class="w3-grey" style="height:24px;width:{{ guns[current].fire_rate }}%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Ammo</td>
+              <td>
+                <img class="nf-bullet" src="/static/img/bullet.png" ng-repeat="i in range(guns[current].ammo) track by $index">
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <a href="/#/mbed" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Select the game type</a>
+    <a href="/#/game-selection" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Select the game type</a>
 
   </div>
 </div>

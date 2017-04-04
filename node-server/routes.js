@@ -15,11 +15,10 @@ function databaseQuery(query, params, res) {
 
 // Application entry point
 app.get('/',function(req,res){
-    res.sendFile('index.html',{'root': __dirname + '/public/templates'});
-})
+    res.sendFile('index.html', {'root': __dirname + '/public/templates'});
+});
 
 app.post('/get-guns', function(req, res, next){
-    // var cope = req.body.params;
     return databaseQuery('SELECT * FROM nerfus.gun', [], res);
 });
 

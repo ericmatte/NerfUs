@@ -33,6 +33,9 @@ wss.on('connection', function connection(ws) {
     });
 });
 
+// Game logics
+var game = {'gun':undefined, 'game': undefined, 'coordinator': undefined};
+
 function handleSocket(event, data, ws) {
     // ws form : {"event":"chat","data":"Message test"}
     switch (event.toLowerCase()) {

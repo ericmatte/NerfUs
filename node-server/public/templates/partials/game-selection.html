@@ -4,8 +4,6 @@
     <h1>Game Selection</h1>
   </div>
 
-
-
   <div class="w3-row w3-margin nf-container">
     <div class="w3-col m5 l4">
       <ul class="w3-ul nf-gun-list">
@@ -16,15 +14,39 @@
       </ul>
     </div>
 
-    <div ng-if="games[current] != undefined" class="w3-col m7 l8 nf-gun-container w3-padding">
+    <div ng-if="games[current] != undefined" class="w3-col m7 l8 nf-item-desc w3-padding">
 
       <h2 class="nf-title">{{ games[current].name }}</h2>
-      <p>{{ games[current].description }}</p>
+      <h4>{{ games[current].description }}</h4>
 
+      <div>
+        <h3>
+          <i class="fa fa-clock-o" aria-hidden="true"></i> Game Length
+        </h3>
+        <h4>{{ games[current].game_length / 60 }} minutes</h4>
+      </div>
+
+      <div>
+        <h3>
+          <i class="fa fa-bolt" aria-hidden="true"></i> Targets Max Time up
+        </h3>
+        <h4>{{ games[current].game_length }} seconds</h4>
+      </div>
+
+      <div>
+        <h3>
+          <i class="fa fa-bullseye" aria-hidden="true"></i> Enemies
+        </h3>
+        <h4 ng-if="games[current].number_of_target != undefined">
+          {{ games[current].number_of_target }} targets
+        </h4>
+        <h4 ng-if="games[current].number_of_target == undefined">
+          Ulimited targets
+        </h4>
+      </div>
     </div>
 
     <a href="/#/ready" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Mission Summary</a>
 
   </div>
-
 </div>

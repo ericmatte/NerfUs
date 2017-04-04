@@ -136,6 +136,13 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
     });
 }]);
 
+/* Mission Summary (Ready?) */
+app.controller('MissionSummary', ['$scope', '$rootScope', function ($scope, $rootScope) {
+    $scope.startGame = function () {
+
+    };
+}]);
+
 /* mbed Available Commands */
 app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.commands = [
