@@ -1,6 +1,7 @@
-<div ng-controller="StartingScreen" class="w3-display-middle noselect">
+<div ng-controller="StartingScreen" class="w3-display-middle noselect" style="text-align:center">
   <img src="/static/img/logo.png">
-  <p style="text-align:center"><a href="/#/gun-selection" class="w3-button w3-red w3-xxlarge">START</a></p>
+  <p ng-if="!game.coordinator">Waiting for coordinator to connect...</p>
+  <a ng-href="{{!game.coordinator ? '/#/': '/#/gun-selection'}}" ng-class="{'w3-disabled': !game.coordinator}" class="w3-button w3-red w3-xxlarge">START</a>
 </div>
 
 <a href="/#/mbed" class="w3-button w3-blue w3-xlarge w3-display-bottomright w3-margin">mbed Showcase</a>

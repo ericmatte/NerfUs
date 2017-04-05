@@ -1,4 +1,5 @@
 var server = require('./server');
+var ws = require('./websockets');
 var app = server.app;
 
 /** Make a server response with the result of the database query
@@ -22,6 +23,12 @@ function databaseQuery(query, params, res) {
 /** Application entry point */
 app.get('/',function(req,res){
     res.sendFile('index.html', {'root': __dirname + '/public/templates'});
+});
+
+/** This check if a mbed coordinator is connected. If so, then the game can be launched */
+app.post('/check-for-coordinator', function(req, res, next){
+    var coordinatorConnected = (ws.game.coordinator !== undefined);
+    return res.status(200).send(coordinatorConnected);
 });
 
 /** Get the complete list of guns */

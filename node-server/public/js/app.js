@@ -1,55 +1,86 @@
 'use strict';   // See note about 'use strict'; below
 
+/** Make a websocket connection with the server */
+function connectWebsocket($rootScope, $websocket) {
+    $rootScope.websocketUrl = 'ws://' + document.domain + ':8000/';
+    $rootScope.ws = $websocket.$new($rootScope.websocketUrl); // instance of ngWebsocket, handled by $websocket service
+    $rootScope.ws.$on('$open', function () {
+        console.log('Websocket connected.');
+    });
+    $rootScope.ws.$on('$close', function () {
+        console.log('Websocket disconnected.');
+    });
+}
+
+/** Initialize angular functions */
+function initAngular($rootScope) {
+    /** Simple function that convert a number into an array
+     * This is use to make loop in angular.js templates
+     * @param {Number} num The query to send to the server
+     * @return {Array} An array with the length of num
+     */
+    $rootScope.range = function (num) {
+        return new Array(num);
+    }
+
+    /** Allow index incrementation/decrementation for a list
+     * @param {Number} direction 'next' (+1) or 'previous' (-1)
+     * @param {Number} index The current index in the list
+     * @param {Number} arrayLength The list length
+     * @return {Array} The new index
+     */
+    $rootScope.navigate = function (direction, index, arrayLength) {
+        index += ((direction == 'next') ? 1 : -1);
+        index = (index < 0) ? 0 : (index >= arrayLength) ? arrayLength - 1 : index;
+        return index;
+    }
+}
+
 var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
-    .run(function ($rootScope, $websocket) {
-        /** Simple function that convert a number into an array
-         * This is use to make loop in angular.js templates
-         * @param {Number} num The query to send to the server
-         * @return {Array} An array with the length of num
+    .run(function ($rootScope, $websocket, $http) {
+        initAngular($rootScope);
+        connectWebsocket($rootScope, $websocket);
+
+        /** Game variables
+         * @param {Boolean} inGame When true, the app will follow the games variables
+         * @param {Dict} gun The selected gun
+         * @param {Dict} game The selected game
+         * @param {Boolean} coordinator true if a coordinator is connected
          */
-        $rootScope.range = function (num) {
-            return new Array(num);
-        }
+        $rootScope.game = { inGame: false, gun: undefined, game: undefined, coordinator: undefined };
+        // The list of path that the game must follow
+        $rootScope.gameFlow = ['/', '/gun-selection', '/game-selection', '/ready'];
 
-        /** Allow index incrementation/decrementation for a list
-         * @param {Number} direction 'next' (+1) or 'previous' (-1)
-         * @param {Number} index The current index in the list
-         * @param {Number} arrayLength The list length
-         * @return {Array} The new index
-         */
-        $rootScope.navigate = function (direction, index, arrayLength) {
-            index += ((direction == 'next') ? 1 : -1);
-            index = (index < 0) ? 0 : (index >= arrayLength) ? arrayLength - 1 : index;
-            return index;
-        }
+        /** Verify that the coordinator is connected before starting the game */
+        $http({ method: 'POST', url: '/check-for-coordinator' })
+            .success(function (coordinator, status) {
+                $rootScope.game.coordinator = coordinator || undefined;
+            });
 
-        // Game variables
-        $rootScope.game = { 'gun': undefined, 'game': undefined };
-
-        // Connection to the websocket server
-        $rootScope.websocketUrl = 'ws://' + document.domain + ':8000/';
-        $rootScope.ws = $websocket.$new($rootScope.websocketUrl); // instance of ngWebsocket, handled by $websocket service
-        $rootScope.ws.$on('$open', function () {
-            console.log('Websocket connected.');
-        });
-        $rootScope.ws.$on('$close', function () {
-            console.log('Noooooooooou, I want to have more fun with Websocket, but the connection is now close. Damn it!');
-        });
 
         /** Route selection on 'start' websocket event */
         $rootScope.ws.$on('start', function () {
-            switch (window.location.hash) {
-                case "#/":
-                    window.location = '/#/gun-selection';
-                    break;
-                case "#/gun-selection":
-                    window.location = '/#/game-selection';
-                    break;
-                case "#/game-selection":
-                    window.location = '/#/ready';
-                    break;
-                default:
+            var path = window.location.hash.substr(1);
+            if (path != '/mbed') {
+                if ($rootScope.game.coordinator) {
+                    var index = $rootScope.gameFlow.indexOf(path);
+                    window.location = '/#' + $rootScope.gameFlow[index + 1];
+                }
             }
+        });
+
+        /** mbed socket handling */
+        $rootScope.ws.$on('mbed', function (data) {
+            var path = window.location.hash.substr(1);
+            if (data.state) {
+                if (data.state == 'connected') {
+                    $rootScope.game.coordinator = true;
+                } else {
+                    $rootScope.game.coordinator = undefined;
+                    if (path != 'mbed') { window.location = '/#' + $rootScope.gameFlow[0]; }
+                }
+            }
+            $rootScope.$apply();
         });
     });
 
@@ -69,12 +100,11 @@ app.config(['$routeProvider', function ($routeProvider) {
     }).otherwise({
         redirectTo: '/'
     });
-}
-]);
+}]);
+
 
 /* Starting screen (Index) */
-app.controller('StartingScreen', ['$scope', '$rootScope', function ($scope, $rootScope) {
-
+app.controller('StartingScreen', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 }]);
 
 /* Gun Selection */
@@ -116,7 +146,7 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
     });
 
     /** Detachs all websockets of the scope and save the selected gun */
-    $scope.$on('$routeChangeStart', function (next, current) {
+    $scope.$on('$locationChangeStart', function (event) {
         $rootScope.game.gun = $scope.guns[$scope.current];
         $rootScope.ws.$un('select_gun');
         $rootScope.ws.$un('navigate');
@@ -156,7 +186,7 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
     });
 
     /** Detachs all websockets of the scope and save the selected game */
-    $scope.$on('$routeChangeStart', function (next, current) {
+    $scope.$on('$locationChangeStart', function (event) {
         $rootScope.game.game = $scope.games[$scope.current]; // Save the selected game
         $rootScope.ws.$un('navigate'); // Detaching scope websocket
     });
@@ -174,6 +204,10 @@ app.controller('MissionSummary', ['$scope', '$rootScope', function ($scope, $roo
 app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     // List of all available mbed commands
     $scope.commands = [
+        {
+            title: 'mbed Coordinator discovery', description: 'On it\'s first connection, the mbed coordinator must send this command in order for the game to run.',
+            event: 'mbed', data: '{"state": "connected"}', commands: ['{"state": "connected"}', '{"state": "disconnected"}']
+        },
         {
             title: 'Start game', description: 'Allow the game to start. Also used to navigate between menus.',
             event: 'start'
@@ -228,9 +262,9 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
         alert(message);
     });
 
-    
+
     /** Detachs all websockets of the scope */
-    $scope.$on('$routeChangeStart', function (next, current) {
+    $scope.$on('$locationChangeStart', function (event) {
         $rootScope.ws.$un('chat'); // Detaching scope websocket
     });
 }]);

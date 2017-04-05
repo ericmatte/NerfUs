@@ -11,7 +11,12 @@ console.log('Websocket listening @ ws://localhost:' + server.wsPort + '/')
  * @return {String} A formatted string
  */
 function assembleSocket(event, data) {
-    return '{"event":"' + event + '","data":' + JSON.stringify(data) + '}';
+    if (data === undefined) {
+        return '{"event":"' + event + '"}';
+    } else {
+        return '{"event":"' + event + '","data":' + JSON.stringify(data) + '}';
+    }
+    
 }
 
 /** Transmit a socket to all connected clients
@@ -49,7 +54,11 @@ wss.on('connection', function connection(ws) {
 });
 
 /** Game logics */
-var game = { 'gun': undefined, 'game': undefined, 'coordinator': undefined };
+var game = { gun: undefined, game: undefined, coordinator: undefined };
+
+module.exports = {
+    game: game
+};
 
 /** Handle all received messages that has at least event and optional data
  * Supported websocket form : {"event":"chat","data":"Message test"}
@@ -70,12 +79,22 @@ function handleSocket(event, data, ws) {
         case 'chat':
             ws.send('{"event":"' + event + '","data":' + JSON.stringify(data) + '}');
             break;
-        default:
-            if (data === undefined) {
-                wss.broadcast('{"event":"' + event + '"}');
+
+        case 'mbed':
+            if (data.state == 'connected') {
+                game.coordinator = ws;
+                ws.on('close', function close() {
+                    console.log('Coordinator disconnected.');
+                    game.coordinator = undefined;
+                    wss.broadcast(assembleSocket('mbed', {state: 'disconnected'}));
+                });
             } else {
-                wss.broadcast('{"event":"' + event + '","data":' + JSON.stringify(data) + '}');
+                game.coordinator = undefined;
             }
+            // No break in order to broadcast the mbed state
+
+        default:
+            wss.broadcast(assembleSocket(event, data));
             break;
     }
 }
