@@ -16,7 +16,7 @@ function assembleSocket(event, data) {
     } else {
         return '{"event":"' + event + '","data":' + JSON.stringify(data) + '}';
     }
-    
+
 }
 
 /** Transmit a socket to all connected clients
@@ -53,13 +53,6 @@ wss.on('connection', function connection(ws) {
     });
 });
 
-/** Game logics */
-var game = { gun: undefined, game: undefined, coordinator: undefined };
-
-module.exports = {
-    game: game
-};
-
 /** Handle all received messages that has at least event and optional data
  * Supported websocket form : {"event":"chat","data":"Message test"}
  * @param {String} event The event of the message
@@ -67,34 +60,130 @@ module.exports = {
  */
 function handleSocket(event, data, ws) {
     switch (event.toLowerCase()) {
-        case 'gun':
-            var query = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
-            var query = server.connection.query(query, data.id, function (err, gun) {
-                if (gun) {
-                    wss.broadcast(assembleSocket('select_gun', gun[0]));
-                }
-            });
-            break;
-
-        case 'chat':
-            ws.send('{"event":"' + event + '","data":' + JSON.stringify(data) + '}');
-            break;
-
         case 'mbed':
             if (data.state == 'connected') {
                 game.coordinator = ws;
                 ws.on('close', function close() {
                     console.log('Coordinator disconnected.');
                     game.coordinator = undefined;
-                    wss.broadcast(assembleSocket('mbed', {state: 'disconnected'}));
+                    requestGameChange(false);
                 });
             } else {
                 game.coordinator = undefined;
             }
-            // No break in order to broadcast the mbed state
+            requestGameChange(false);
+            break;
+
+        case 'fetch_game':
+            requestGameChange(false);
+            break;
+            
+        case 'start':
+            requestGameChange(true);
+            break;
+
+        case 'gun':
+            var q = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
+            server.connection.query(q, data.rfid_code, function (err, gun) {
+                if (gun) {
+                    game.gun = gun[0];
+                    requestGameChange(false);
+                }
+            });
+            break;
+
+        case 'navigate':
+            navigate(data.direction);
+            break;
+
+        case 'chat':
+            ws.send('{"event":"' + event + '","data":' + JSON.stringify(data) + '}');
+            break;
 
         default:
             wss.broadcast(assembleSocket(event, data));
             break;
     }
+}
+
+/** Game variables
+ * @param {Boolean} inGame When true, the app will follow the games variables
+ * @param {Dict} gun The selected gun
+ * @param {Dict} game The selected game
+ * @param {Boolean} coordinator true if a coordinator is connected
+ */
+var game = {
+    gun: undefined, game: undefined, coordinator: undefined,
+    currentPath: '/',
+    // The list of path that the game must follow
+    paths: ['/', '/gun-selection', '/game-selection', '/ready']
+};
+
+module.exports = {
+    game: game
+};
+
+/** Handle app in mennu navigation
+ * @param {JSON} data The associated data
+ */
+function navigate(direction) {
+    switch (game.currentPath) {
+        case game.paths[1]: // Gun Selection Menu
+            server.connection.query('SELECT * FROM nerfus.gun', function (err, guns) {
+                if (!game.gun) {
+                    game.gun = guns[0];
+                } else {
+                    var index = guns.map(function (e) { return e.gun_id; }).indexOf(game.gun.gun_id);
+                    game.gun = guns[getNewIndex(direction, index, guns.length)];
+                }
+                requestGameChange(false);
+            });
+            break;
+        case game.paths[2]: // Game Selection Menu
+            break;
+    }
+}
+
+/** Allow index incrementation/decrementation for a list
+ * @param {Number} direction 'next' (+1) or 'previous' (-1)
+ * @param {Number} index The current index in the list
+ * @param {Number} arrayLength The list length
+ * @return {Array} The new index
+ */
+function getNewIndex(direction, index, arrayLength) {
+    index += ((direction == 'next') ? 1 : -1);
+    index = (index < 0) ? 0 : (index >= arrayLength) ? arrayLength - 1 : index;
+    return index;
+}
+
+/** Handle app game navigation
+ * @param {JSON} data The associated data
+ */
+function requestGameChange(changePath) {
+    var params = {
+        coordinator: (game.coordinator != undefined),
+        gun: game.gun,
+        game: game.game,
+        path: game.currentPath
+    };
+
+    if (game.coordinator && changePath) {
+
+        if (!game.gun && !game.game) {
+            // Go to Gun Selection Menu
+            params.path = game.paths[1];
+
+        } else if (game.gun && !game.game) {
+            // Go to Game Selection Menu
+            params.path = game.paths[2];
+
+        } else if (game.gun && game.game) {
+            // Go to Mission Summary
+            params.path = game.paths[3];
+        }
+
+        game.currentPath = params.path;
+    }
+
+    wss.broadcast(assembleSocket('game_changed', params));
 }

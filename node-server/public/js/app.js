@@ -6,6 +6,8 @@ function connectWebsocket($rootScope, $websocket) {
     $rootScope.ws = $websocket.$new($rootScope.websocketUrl); // instance of ngWebsocket, handled by $websocket service
     $rootScope.ws.$on('$open', function () {
         console.log('Websocket connected.');
+        // Fetch game state from server after websocket connection
+        $rootScope.ws.$emit('fetch_game');
     });
     $rootScope.ws.$on('$close', function () {
         console.log('Websocket disconnected.');
@@ -37,50 +39,23 @@ function initAngular($rootScope) {
 }
 
 var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
-    .run(function ($rootScope, $websocket, $http) {
+    .run(function ($rootScope, $websocket, $http, $location) {
         initAngular($rootScope);
         connectWebsocket($rootScope, $websocket);
 
-        /** Game variables
-         * @param {Boolean} inGame When true, the app will follow the games variables
-         * @param {Dict} gun The selected gun
-         * @param {Dict} game The selected game
-         * @param {Boolean} coordinator true if a coordinator is connected
-         */
-        $rootScope.game = { inGame: false, gun: undefined, game: undefined, coordinator: undefined };
-        // The list of path that the game must follow
-        $rootScope.gameFlow = ['/', '/gun-selection', '/game-selection', '/ready'];
+        /** Game variables */
+        $rootScope.game = { inGame: true, coordinator: false };
 
-        /** Verify that the coordinator is connected before starting the game */
-        $http({ method: 'POST', url: '/check-for-coordinator' })
-            .success(function (coordinator, status) {
-                $rootScope.game.coordinator = coordinator || undefined;
-            });
+        /** Route selection and game logics managed by the server */
+        $rootScope.ws.$on('game_changed', function (params) {
+            if ($rootScope.game.inGame) {
+                $rootScope.game.coordinator = params.coordinator || false;
+                $rootScope.game.gun = params.gun;
+                $rootScope.game.game = params.game;
+                if (params.path) { $location.url(params.path); }
 
-
-        /** Route selection on 'start' websocket event */
-        $rootScope.ws.$on('start', function () {
-            var path = window.location.hash.substr(1);
-            if (path != '/mbed') {
-                if ($rootScope.game.coordinator) {
-                    var index = $rootScope.gameFlow.indexOf(path);
-                    window.location = '/#' + $rootScope.gameFlow[index + 1];
-                }
+                $rootScope.$apply();
             }
-        });
-
-        /** mbed socket handling */
-        $rootScope.ws.$on('mbed', function (data) {
-            var path = window.location.hash.substr(1);
-            if (data.state) {
-                if (data.state == 'connected') {
-                    $rootScope.game.coordinator = true;
-                } else {
-                    $rootScope.game.coordinator = undefined;
-                    if (path != 'mbed') { window.location = '/#' + $rootScope.gameFlow[0]; }
-                }
-            }
-            $rootScope.$apply();
         });
     });
 
@@ -102,16 +77,16 @@ app.config(['$routeProvider', function ($routeProvider) {
     });
 }]);
 
-
 /* Starting screen (Index) */
 app.controller('StartingScreen', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+    $scope.startGame = function () {
+        $rootScope.ws.$emit('start');
+    };
 }]);
 
 /* Gun Selection */
 app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
-    $scope.current = 0;
     $scope.guns = undefined;
-    $rootScope.game.gun = undefined;
 
     /** Get the list of guns */
     $http({ method: 'POST', url: '/get-guns' })
@@ -126,18 +101,8 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
      * @param {Dict} gun The gun to select
      */
     $scope.selectGun = function (gun) {
-        for (var i = 0; i < $scope.guns.length; i++) {
-            if ($scope.guns[i].gun_id == gun.gun_id) {
-                $scope.current = i;
-            }
-        }
+        $rootScope.ws.$emit('gun', gun);
     };
-
-    /** Websocket gun selection */
-    $rootScope.ws.$on('select_gun', function (selectedGun) {
-        $scope.selectGun(selectedGun);
-        $scope.$apply();
-    });
 
     /** Gun menu navigation */
     $rootScope.ws.$on('navigate', function (position) {
@@ -147,8 +112,6 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
 
     /** Detachs all websockets of the scope and save the selected gun */
     $scope.$on('$locationChangeStart', function (event) {
-        $rootScope.game.gun = $scope.guns[$scope.current];
-        $rootScope.ws.$un('select_gun');
         $rootScope.ws.$un('navigate');
     });
 }]);
@@ -157,7 +120,6 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
 app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.current = 0;
     $scope.games = undefined;
-    $rootScope.game.game = undefined;
 
     /** Get the list of games */
     $http({ method: 'POST', url: '/get-games' })
@@ -202,6 +164,8 @@ app.controller('MissionSummary', ['$scope', '$rootScope', function ($scope, $roo
 
 /* mbed Available Commands */
 app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+    $rootScope.game.inGame = false;
+
     // List of all available mbed commands
     $scope.commands = [
         {
@@ -218,7 +182,7 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
         },
         {
             title: 'Select gun', description: 'Command to send when the RFID of a gun has been scanned.',
-            event: 'gun', data: '{"id": "34ba12987ffa"}'
+            event: 'gun', data: '{"rfid_code": "34ba12987ffa"}'
         },
         {
             title: 'Mission report', description: 'Target=12, Enemies=8, Allies=4, AverageReflexTimeInMs=2000, GameLengthInMs=12354, Score=12668',
@@ -237,7 +201,7 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
 
             $scope.commands[gunIndex]['commands'] = [];
             for (var i = 0; i < data.length; i++) {
-                $scope.commands[gunIndex]['commands'].push('{"id": "' + data[i].rfid_code + '"}');
+                $scope.commands[gunIndex]['commands'].push('{"rfid_code": "' + data[i].rfid_code + '"}');
             }
         });
 
@@ -265,6 +229,7 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
 
     /** Detachs all websockets of the scope */
     $scope.$on('$locationChangeStart', function (event) {
+        $rootScope.game.inGame = true;
         $rootScope.ws.$un('chat'); // Detaching scope websocket
     });
 }]);
