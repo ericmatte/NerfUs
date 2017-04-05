@@ -2,10 +2,21 @@
 
 var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
     .run(function ($rootScope, $websocket) {
+        /** Simple function that convert a number into an array
+         * This is use to make loop in angular.js templates
+         * @param {Number} num The query to send to the server
+         * @return {Array} An array with the length of num
+         */
         $rootScope.range = function (num) {
             return new Array(num);
         }
 
+        /** Allow index incrementation/decrementation for a list
+         * @param {Number} direction 'next' (+1) or 'previous' (-1)
+         * @param {Number} index The current index in the list
+         * @param {Number} arrayLength The list length
+         * @return {Array} The new index
+         */
         $rootScope.navigate = function (direction, index, arrayLength) {
             index += ((direction == 'next') ? 1 : -1);
             index = (index < 0) ? 0 : (index >= arrayLength) ? arrayLength - 1 : index;
@@ -15,18 +26,17 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
         // Game variables
         $rootScope.game = { 'gun': undefined, 'game': undefined };
 
+        // Connection to the websocket server
         $rootScope.websocketUrl = 'ws://' + document.domain + ':8000/';
         $rootScope.ws = $websocket.$new($rootScope.websocketUrl); // instance of ngWebsocket, handled by $websocket service
-
         $rootScope.ws.$on('$open', function () {
             console.log('Websocket connected.');
         });
-
         $rootScope.ws.$on('$close', function () {
             console.log('Noooooooooou, I want to have more fun with Websocket, but the connection is now close. Damn it!');
         });
 
-        // Route selection on 'start' websocket
+        /** Route selection on 'start' websocket event */
         $rootScope.ws.$on('start', function () {
             switch (window.location.hash) {
                 case "#/":
@@ -43,7 +53,7 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
         });
     });
 
-
+/** Binds all routes for the app */
 app.config(['$routeProvider', function ($routeProvider) {
     var prefix = '../static/templates/partials/';
     $routeProvider.when('/', {
@@ -73,6 +83,7 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
     $scope.guns = undefined;
     $rootScope.game.gun = undefined;
 
+    /** Get the list of guns */
     $http({ method: 'POST', url: '/get-guns' })
         .success(function (data, status) {
             $scope.guns = data;
@@ -81,6 +92,9 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
             alert("Error while loading the weapons!");
         });
 
+    /** Change the selected index to match the chosen gun
+     * @param {Dict} gun The gun to select
+     */
     $scope.selectGun = function (gun) {
         for (var i = 0; i < $scope.guns.length; i++) {
             if ($scope.guns[i].gun_id == gun.gun_id) {
@@ -89,20 +103,23 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
         }
     };
 
+    /** Websocket gun selection */
     $rootScope.ws.$on('select_gun', function (selectedGun) {
         $scope.selectGun(selectedGun);
         $scope.$apply();
     });
 
+    /** Gun menu navigation */
     $rootScope.ws.$on('navigate', function (position) {
         $scope.current = $rootScope.navigate(position.direction, $scope.current, $scope.guns.length);
         $scope.$apply();
     });
 
+    /** Detachs all websockets of the scope and save the selected gun */
     $scope.$on('$routeChangeStart', function (next, current) {
-        $rootScope.game.gun = $scope.guns[$scope.current]; // Save the selected gun
-        $rootScope.ws.$un('select_gun'); // Detaching scope websocket
-        $rootScope.ws.$un('navigate'); // Detaching scope websocket
+        $rootScope.game.gun = $scope.guns[$scope.current];
+        $rootScope.ws.$un('select_gun');
+        $rootScope.ws.$un('navigate');
     });
 }]);
 
@@ -112,6 +129,7 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
     $scope.games = undefined;
     $rootScope.game.game = undefined;
 
+    /** Get the list of games */
     $http({ method: 'POST', url: '/get-games' })
         .success(function (data, status) {
             $scope.games = data;
@@ -120,6 +138,9 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
             alert("Error while loading all games!");
         });
 
+    /** Change the selected index to match the chosen game
+     * @param {Dict} game The game to select
+     */
     $scope.selectGame = function (game) {
         for (var i = 0; i < $scope.games.length; i++) {
             if ($scope.games[i].game_id == game.game_id) {
@@ -128,11 +149,13 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
         }
     };
 
+    /** Game menu navigation */
     $rootScope.ws.$on('navigate', function (position) {
         $scope.current = $rootScope.navigate(position.direction, $scope.current, $scope.games.length);
         $scope.$apply();
     });
 
+    /** Detachs all websockets of the scope and save the selected game */
     $scope.$on('$routeChangeStart', function (next, current) {
         $rootScope.game.game = $scope.games[$scope.current]; // Save the selected game
         $rootScope.ws.$un('navigate'); // Detaching scope websocket
@@ -141,6 +164,7 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
 
 /* Mission Summary (Ready?) */
 app.controller('MissionSummary', ['$scope', '$rootScope', function ($scope, $rootScope) {
+    /** Send the starting command to the server */
     $scope.startGame = function () {
 
     };
@@ -148,6 +172,7 @@ app.controller('MissionSummary', ['$scope', '$rootScope', function ($scope, $roo
 
 /* mbed Available Commands */
 app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+    // List of all available mbed commands
     $scope.commands = [
         {
             title: 'Start game', description: 'Allow the game to start. Also used to navigate between menus.',
@@ -170,6 +195,8 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
             event: 'chat', data: '"Message test"'
         }];
 
+
+    /** Get the list of guns */
     $http({ method: 'POST', url: '/get-guns' })
         .success(function (data, status) {
             var gunIndex = $scope.commands.map(function (e) { return e.event; }).indexOf('gun');
@@ -180,9 +207,14 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
             }
         });
 
+
+    /** Send the selected sample command to the server by websocket
+     * @param {String} event The event of the message
+     * @param {JSON} data The associated data
+     */
     $scope.sendCommand = function (event, data) {
         try { data = JSON.parse(data); }
-        catch (err) {}
+        catch (err) { }
 
         if (data === undefined) {
             $rootScope.ws.$emit(event);
@@ -191,10 +223,13 @@ app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http
         }
     };
 
+    /** Show chat messages return on screen */
     $rootScope.ws.$on('chat', function (message) {
         alert(message);
     });
 
+    
+    /** Detachs all websockets of the scope */
     $scope.$on('$routeChangeStart', function (next, current) {
         $rootScope.ws.$un('chat'); // Detaching scope websocket
     });
