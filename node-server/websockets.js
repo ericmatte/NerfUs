@@ -41,7 +41,7 @@ function handleSocket(event, data, ws) {
     switch (event.toLowerCase()) {
         case 'gun':
             var query = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
-            var query = server.connection.query(query, data, function (err, gun) {
+            var query = server.connection.query(query, data.id, function (err, gun) {
                 if (gun) {
                     wss.broadcast(assembleSocket('select_gun', gun[0]));
                 }
