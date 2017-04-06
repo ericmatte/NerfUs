@@ -24,6 +24,10 @@
   <iframe width="400" height="50" src="https://www.youtube.com/embed/2qetI-4XvRg?autoplay=0" frameborder="0"></iframe>
 </div>
 <div class="nf-logo w3-display-topright">
+  <p ng-if="!game.coordinator">
+    <i class="fa fa-signal" aria-hidden="true" style="color: red; font-size: 18pt;"></i>
+    Waiting for coordinator to connect...
+  </p>
   <a href="/#/" style="text-decoration: none; font-weight: bold;">
     <img src="/static/img/favicon.png" width="50" height="50"/>
     <label>NerfUS</label>

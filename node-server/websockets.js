@@ -77,7 +77,7 @@ function handleSocket(event, data, ws) {
         case 'fetch_game':
             requestGameChange(false);
             break;
-            
+
         case 'start':
             requestGameChange(true);
             break;
@@ -85,10 +85,16 @@ function handleSocket(event, data, ws) {
         case 'gun':
             var q = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
             server.connection.query(q, data.rfid_code, function (err, gun) {
-                if (gun) {
-                    game.gun = gun[0];
-                    requestGameChange(false);
-                }
+                game.gun = gun[0];
+                requestGameChange(false);
+            });
+            break;
+
+        case 'game':
+            var q = 'SELECT * FROM nerfus.game WHERE nerfus.game.game_id = ?';
+            server.connection.query(q, data.game_id, function (err, gameMode) {
+                game.game = gameMode[0];
+                requestGameChange(false);
             });
             break;
 
@@ -140,6 +146,15 @@ function navigate(direction) {
             });
             break;
         case game.paths[2]: // Game Selection Menu
+            server.connection.query('SELECT * FROM nerfus.game', function (err, games) {
+                if (!game.game) {
+                    game.game = games[0];
+                } else {
+                    var index = games.map(function (e) { return e.game_id; }).indexOf(game.game.game_id);
+                    game.game = games[getNewIndex(direction, index, games.length)];
+                }
+                requestGameChange(false);
+            });
             break;
     }
 }

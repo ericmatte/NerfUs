@@ -29,7 +29,7 @@
               <td>Damage</td>
               <td>
                 <div class="w3-border">
-                  <div class="w3-grey" style="height:24px;width:{{ guns[current].damage }}%"></div>
+                  <div class="w3-grey" style="height:24px;width:{{ game.gun.damage }}%"></div>
                 </div>
               </td>
             </tr>
@@ -37,7 +37,7 @@
               <td>Accuracy</td>
               <td>
                 <div class="w3-border">
-                  <div class="w3-grey" style="height:24px;width:{{ guns[current].accuracy }}%"></div>
+                  <div class="w3-grey" style="height:24px;width:{{ game.gun.accuracy }}%"></div>
                 </div>
               </td>
             </tr>
@@ -45,14 +45,14 @@
               <td>Fire Rate</td>
               <td>
                 <div class="w3-border">
-                  <div class="w3-grey" style="height:24px;width:{{ guns[current].fire_rate }}%"></div>
+                  <div class="w3-grey" style="height:24px;width:{{ game.gun.fire_rate }}%"></div>
                 </div>
               </td>
             </tr>
             <tr>
               <td>Ammo</td>
               <td>
-                <img class="nf-bullet" src="/static/img/bullet.png" ng-repeat="i in range(guns[current].ammo) track by $index">
+                <img class="nf-bullet" src="/static/img/bullet.png" ng-repeat="i in range(game.gun.ammo) track by $index">
               </td>
             </tr>
           </table>
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <a href="/#/game-selection" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Select the game type</a>
+    <a ng-click="nextScreen()" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Select the game type</a>
 
   </div>
 </div>

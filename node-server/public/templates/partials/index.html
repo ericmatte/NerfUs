@@ -1,8 +1,7 @@
 <div ng-controller="StartingScreen" class="w3-display-middle noselect" style="text-align:center">
   <img src="/static/img/logo.png">
   <p>
-    <span ng-if="!game.coordinator">Waiting for coordinator to connect...<br><br></span>
-    <a ng-click="startGame()" ng-class="{'w3-disabled': !game.coordinator}" class="w3-button w3-red w3-xxlarge">START</a>
+    <a ng-click="nextScreen()" ng-class="{'w3-disabled': !game.coordinator}" class="w3-button w3-red w3-xxlarge">START</a>
   </p>
 </div>
 

@@ -24,18 +24,6 @@ function initAngular($rootScope) {
     $rootScope.range = function (num) {
         return new Array(num);
     }
-
-    /** Allow index incrementation/decrementation for a list
-     * @param {Number} direction 'next' (+1) or 'previous' (-1)
-     * @param {Number} index The current index in the list
-     * @param {Number} arrayLength The list length
-     * @return {Array} The new index
-     */
-    $rootScope.navigate = function (direction, index, arrayLength) {
-        index += ((direction == 'next') ? 1 : -1);
-        index = (index < 0) ? 0 : (index >= arrayLength) ? arrayLength - 1 : index;
-        return index;
-    }
 }
 
 var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
@@ -47,16 +35,20 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
         $rootScope.game = { inGame: true, coordinator: false };
 
         /** Route selection and game logics managed by the server */
-        $rootScope.ws.$on('game_changed', function (params) {
+        $rootScope.ws.$on('game_changed', function (gameParams) {
             if ($rootScope.game.inGame) {
-                $rootScope.game.coordinator = params.coordinator || false;
-                $rootScope.game.gun = params.gun;
-                $rootScope.game.game = params.game;
-                if (params.path) { $location.url(params.path); }
+                $rootScope.game = { inGame: true, coordinator: false };
+                // Merge new params into the game variable
+                $rootScope.game = Object.assign($rootScope.game, gameParams);
+                if (gameParams.path) { $location.url(gameParams.path); }
 
                 $rootScope.$apply();
             }
         });
+        
+        $rootScope.nextScreen = function () {
+            $rootScope.ws.$emit('start');
+        };
     });
 
 /** Binds all routes for the app */
@@ -79,9 +71,6 @@ app.config(['$routeProvider', function ($routeProvider) {
 
 /* Starting screen (Index) */
 app.controller('StartingScreen', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
-    $scope.startGame = function () {
-        $rootScope.ws.$emit('start');
-    };
 }]);
 
 /* Gun Selection */
@@ -104,21 +93,13 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
         $rootScope.ws.$emit('gun', gun);
     };
 
-    /** Gun menu navigation */
-    $rootScope.ws.$on('navigate', function (position) {
-        $scope.current = $rootScope.navigate(position.direction, $scope.current, $scope.guns.length);
-        $scope.$apply();
-    });
-
     /** Detachs all websockets of the scope and save the selected gun */
     $scope.$on('$locationChangeStart', function (event) {
-        $rootScope.ws.$un('navigate');
     });
 }]);
 
 /* Game Selection */
 app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
-    $scope.current = 0;
     $scope.games = undefined;
 
     /** Get the list of games */
@@ -134,24 +115,8 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
      * @param {Dict} game The game to select
      */
     $scope.selectGame = function (game) {
-        for (var i = 0; i < $scope.games.length; i++) {
-            if ($scope.games[i].game_id == game.game_id) {
-                $scope.current = i;
-            }
-        }
+        $rootScope.ws.$emit('game', game);
     };
-
-    /** Game menu navigation */
-    $rootScope.ws.$on('navigate', function (position) {
-        $scope.current = $rootScope.navigate(position.direction, $scope.current, $scope.games.length);
-        $scope.$apply();
-    });
-
-    /** Detachs all websockets of the scope and save the selected game */
-    $scope.$on('$locationChangeStart', function (event) {
-        $rootScope.game.game = $scope.games[$scope.current]; // Save the selected game
-        $rootScope.ws.$un('navigate'); // Detaching scope websocket
-    });
 }]);
 
 /* Mission Summary (Ready?) */
