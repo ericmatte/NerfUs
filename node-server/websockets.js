@@ -79,7 +79,7 @@ function handleSocket(event, data, ws) {
             game.game = undefined;
             game.gameOn = false;
             game.gameStarted = false;
-            game.currentPath = game.paths[0];
+            game.state = 'Start Screen';
             requestGameChange(false);
             break;
 
@@ -109,7 +109,7 @@ function handleSocket(event, data, ws) {
 
         case 'report':
             if (game.timer != undefined) {
-                clearInterval(game.timer);
+                stopGame();
             }
             break;
 
@@ -132,9 +132,16 @@ function handleSocket(event, data, ws) {
  */
 var game = {
     gun: undefined, game: undefined, gameOn: false, coordinator: undefined,
-    currentPath: '/',
+    state: 'Start Screen',
     // The list of path that the game must follow
-    paths: ['/', '/gun-selection', '/game-selection', '/ready', '/game-on']
+    paths: {
+        'Start Screen': '/',
+        'Gun Selection': '/gun-selection',
+        'Game Selection': '/game-selection',
+        'Mission Summary': '/ready',
+        'Game On': '/game-on',
+        'Mission Report': '/mission-report'
+    }
 };
 
 module.exports = {
@@ -145,8 +152,8 @@ module.exports = {
  * @param {JSON} data The associated data
  */
 function navigate(direction) {
-    switch (game.currentPath) {
-        case game.paths[1]: // Gun Selection Menu
+    switch (game.state) {
+        case 'Gun Selection':
             server.connection.query('SELECT * FROM nerfus.gun', function (err, guns) {
                 if (!game.gun) {
                     game.gun = guns[0];
@@ -157,7 +164,7 @@ function navigate(direction) {
                 requestGameChange(false);
             });
             break;
-        case game.paths[2]: // Game Selection Menu
+        case 'Game Selection':
             server.connection.query('SELECT * FROM nerfus.game', function (err, games) {
                 if (!game.game) {
                     game.game = games[0];
@@ -187,42 +194,50 @@ function getNewIndex(direction, index, arrayLength) {
  * @param {Boolean} changePath If true, will force the frontend to change it`s location path according to the server
  */
 function requestGameChange(changePath) {
+
+    if (changePath) {
+        switch (game.state) {
+            case 'Start Screen':
+                game.state = 'Gun Selection';
+                break;
+
+            case 'Gun Selection':
+                if (game.gun) {
+                    game.state = 'Game Selection';
+                }
+                break;
+
+            case 'Game Selection':
+                if (game.game) {
+                    game.state = 'Mission Summary';
+                }
+                break;
+
+            case 'Mission Summary':
+                if (game.coordinator) {
+                    startGame();
+                    game.state = 'Game On';
+                }
+                break;
+
+            case 'Game On':
+                break;
+
+            case 'Mission Report':
+                break;
+
+            default:
+                throw new Error('Game state "' + game.state + '" was not recognized!');
+                break;
+        }
+    }
+
     var params = {
         coordinator: (game.coordinator != undefined),
         gun: game.gun,
         game: game.game,
-        path: game.currentPath
+        path: game.paths[game.state]
     };
-
-    if (changePath) {
-
-        if (!game.gun && !game.game) {
-            // Go to Gun Selection Menu
-            params.path = game.paths[1];
-
-        } else if (game.gun && !game.game) {
-            // Go to Game Selection Menu
-            params.path = game.paths[2];
-
-        } else if (game.gun && game.game && !game.gameOn) {
-            // Go to Mission Summary
-            params.path = game.paths[3];
-            game.gameOn = true;
-
-        } else if (game.gun && game.game && game.gameOn) {
-            if (game.coordinator) {
-                // The game has started!
-                params.path = game.paths[4];
-
-                if (!game.gameStarted) {
-                    startGame();
-                    game.gameStarted = true;
-                }
-            }
-        }
-
-        game.currentPath = params.path;
-    }
 
     wss.broadcast(assembleSocket('game_changed', params));
 }
@@ -238,7 +253,7 @@ function startGame() {
             wss.broadcast(assembleSocket('remainingTime', remainingTime));
 
             if (remainingTime <= 0) {
-                clearInterval(game.timer);
+                stopGame();
             }
         }, timer_precision);
     }
@@ -247,7 +262,7 @@ function startGame() {
         setTimeout(function () {
             countDown--;
             wss.broadcast(assembleSocket('countdown', countDown));
-            
+
             if (countDown > 0) {
                 sendCountDown();
 
@@ -259,4 +274,11 @@ function startGame() {
     }
 
     sendCountDown();
+}
+
+function stopGame() {
+    clearInterval(game.timer);
+    game.timer = undefined;
+    game.state = 'Mission Report';
+    requestGameChange(false);
 }

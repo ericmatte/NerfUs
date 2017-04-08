@@ -22,6 +22,7 @@ angular.module('myApp', [
     'myApp.gameSelection',
     'myApp.missionSummary',
     'myApp.gameOn',
+    'myApp.missionReport',
     'myApp.mbed',
 ])
 
