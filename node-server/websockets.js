@@ -78,6 +78,7 @@ function handleSocket(event, data, ws) {
             game.gun = undefined;
             game.game = undefined;
             game.gameOn = false;
+            game.gameStarted = false;
             game.currentPath = game.paths[0];
             requestGameChange(false);
             break;
@@ -111,9 +112,6 @@ function handleSocket(event, data, ws) {
             break;
 
         case 'chat':
-            ws.send('{"event":"' + event + '","data":' + JSON.stringify(data) + '}');
-            break;
-
         default:
             wss.broadcast(assembleSocket(event, data));
             break;
@@ -209,6 +207,11 @@ function requestGameChange(changePath) {
             if (game.coordinator) {
                 // The game has started!
                 params.path = game.paths[4];
+
+                if (!game.gameStarted) {
+                    startGame();
+                    game.gameStarted = true;
+                }
             }
         }
 
@@ -216,4 +219,24 @@ function requestGameChange(changePath) {
     }
 
     wss.broadcast(assembleSocket('game_changed', params));
+}
+
+function startGame() {
+    var countDown = 3;
+
+    function sendCountDown() {
+        setTimeout(function () {
+            countDown--;
+            wss.broadcast(assembleSocket('countdown', countDown));
+            
+            if (countDown > 0) {
+                sendCountDown();
+
+            } else {
+                game.coordinator.send(assembleSocket('start_game', game.game));
+            }
+        }, 1000);
+    }
+
+    sendCountDown();
 }

@@ -10,14 +10,15 @@ angular.module('myApp.gameOn', ['ngRoute'])
 }])
 
 .controller('GameOn', ['$scope', '$rootScope', '$timeout', function ($scope, $rootScope, $timeout) {
-    $scope.clock = "loading clock..."; // initialise the time variable
-    $scope.tickInterval = 1000 //ms
+    $scope.countdown = 3;
+    
+    $rootScope.ws.$on('countdown', function (countdown) {
+        $scope.countdown = countdown;
+        $scope.$apply();
+    });
 
-    var tick = function () {
-        $scope.clock = Date.now() // get the current time
-        $timeout(tick, $scope.tickInterval); // reset the timer
-    }
-
-    // Start the timer
-    $timeout(tick, $scope.tickInterval);
+    /** Detachs all websockets of the scope and save the selected gun */
+    $scope.$on('$locationChangeStart', function (event) {
+        $rootScope.ws.$un('countdown');
+    });
 }]);

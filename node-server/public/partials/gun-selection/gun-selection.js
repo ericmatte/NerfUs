@@ -27,8 +27,4 @@ angular.module('myApp.gunSelection', ['ngRoute'])
     $scope.selectGun = function (gun) {
         $rootScope.ws.$emit('gun', gun);
     };
-
-    /** Detachs all websockets of the scope and save the selected gun */
-    $scope.$on('$locationChangeStart', function (event) {
-    });
 }]);
