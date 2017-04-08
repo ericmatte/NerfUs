@@ -75,7 +75,7 @@
 <p>On the first on, run this:</p>
 
 <blockquote>
-	node-inspector
+	node_modules\.bin\node-inspector
 </blockquote>
 
 <p>It will show you an local web address. This is the <strong>server-side debugging tool</strong>. Use chrome for better debugging.</p>
@@ -83,12 +83,26 @@
 <p>On the second CMD, run this:</p>
 
 <blockquote>
-	nodemon --debug server.js
+	node_modules\.bin\nodemon --debug
 </blockquote>
 
 <p>Nodemon will start the node server, and also listen for any changes in the code. When that happens, it will automatically restart the server.</p>
 
 <p><em>While their is a lot of way to run a node-js server, really like this one, because it give you some powerful debugging features.</em></p>
+
+<p>If you want to be able to run nodemon and node-inspector with any node.js project, install the packages globally:</p>
+
+<blockquote>
+	npm install -g nodemon node-inspector
+</blockquote>
+
+<p>After that, you will be able to simply run these commands:</p>
+
+<blockquote>
+	node-inspector
+	<br>
+	nodemon
+</blockquote>
 
 <p>
 	<br>

@@ -15,6 +15,7 @@
   <script src="/static/js/angular.min.js"></script>
   <script src="/static/js/angular-route.min.js"></script>
   <script src="/static/js/ng-websocket/ng-websocket.js"></script>
+  <script src="/static/js/app-directives.js"></script>
   <script src="/static/js/app.js"></script>
   <link rel="stylesheet" href="/static/css/style.css"/>
 </head>
@@ -24,6 +25,7 @@
   <iframe width="400" height="50" src="https://www.youtube.com/embed/2qetI-4XvRg?autoplay=0" frameborder="0"></iframe>
 </div>
 <div class="nf-logo w3-display-topright">
+  <w3-test-directive></w3-test-directive>
   <p ng-if="!game.coordinator">
     <i class="fa fa-signal" aria-hidden="true" style="color: red; font-size: 18pt;"></i>
     Waiting for coordinator to connect...

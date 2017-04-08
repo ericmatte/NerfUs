@@ -2,7 +2,7 @@
   "name": "nerfus",
   "version": "1.0.0",
   "description": "A nerf firing range game",
-  "main": "public/js/app.js",
+  "main": "server.js",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "4.15.2",

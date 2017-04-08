@@ -26,7 +26,8 @@ function initAngular($rootScope) {
     }
 }
 
-var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
+angular.module('myApp', ['ngRoute', 'ngWebsocket'])
+
     .run(function ($rootScope, $websocket, $http, $location) {
         initAngular($rootScope);
         connectWebsocket($rootScope, $websocket);
@@ -45,14 +46,14 @@ var app = angular.module('myApp', ['ngRoute', 'ngWebsocket'])
                 $rootScope.$apply();
             }
         });
-        
+
         $rootScope.nextScreen = function () {
             $rootScope.ws.$emit('start');
         };
-    });
+    })
 
 /** Binds all routes for the app */
-app.config(['$routeProvider', function ($routeProvider) {
+.config(['$routeProvider', function ($routeProvider) {
     var prefix = '../static/templates/partials/';
     $routeProvider.when('/', {
         templateUrl: prefix + 'index.html'
@@ -67,14 +68,20 @@ app.config(['$routeProvider', function ($routeProvider) {
     }).otherwise({
         redirectTo: '/'
     });
-}]);
+}])
+
+.directive("w3TestDirective", function () {
+    return {
+        template: "<h1>Made by a directive!</h1>"
+    };
+})
 
 /* Starting screen (Index) */
-app.controller('StartingScreen', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
-}]);
+.controller('StartingScreen', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+}])
 
 /* Gun Selection */
-app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.guns = undefined;
 
     /** Get the list of guns */
@@ -96,10 +103,10 @@ app.controller('GunSelector', ['$scope', '$http', '$rootScope', function ($scope
     /** Detachs all websockets of the scope and save the selected gun */
     $scope.$on('$locationChangeStart', function (event) {
     });
-}]);
+}])
 
 /* Game Selection */
-app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.games = undefined;
 
     /** Get the list of games */
@@ -117,18 +124,18 @@ app.controller('GameSelector', ['$scope', '$http', '$rootScope', function ($scop
     $scope.selectGame = function (game) {
         $rootScope.ws.$emit('game', game);
     };
-}]);
+}])
 
 /* Mission Summary (Ready?) */
-app.controller('MissionSummary', ['$scope', '$rootScope', function ($scope, $rootScope) {
+.controller('MissionSummary', ['$scope', '$rootScope', function ($scope, $rootScope) {
     /** Send the starting command to the server */
     $scope.startGame = function () {
 
     };
-}]);
+}])
 
 /* mbed Available Commands */
-app.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+.controller('mbed', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $rootScope.game.inGame = false;
 
     // List of all available mbed commands
