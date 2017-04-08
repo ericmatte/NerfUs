@@ -3,5 +3,13 @@
     <h1>
       {{ countdown == 0 ? 'Game On!' : countdown }}
     </h1>
+    <div ng-if="time != undefined">
+      <h2>
+        Time left
+      </h2>
+      <h1>
+        {{ time.minutes }}:{{ time.seconds | numberFixedLen:2 }}:{{ time.deciseconds }}
+      </h1>
+    </div>
   </div>
 </div>

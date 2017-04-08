@@ -25,6 +25,10 @@ angular.module('myApp', [
     'myApp.mbed',
 ])
 
+
+/** Filter for leading zeros: 21 -> 0021 */
+.filter('numberFixedLen', ()=>(a,b)=>(1e4+""+a).slice(-b))
+
 .run(function ($rootScope, $websocket, $http, $location) {
     connectWebsocket($rootScope, $websocket);
 

@@ -107,6 +107,12 @@ function handleSocket(event, data, ws) {
             });
             break;
 
+        case 'report':
+            if (game.timer != undefined) {
+                clearInterval(game.timer);
+            }
+            break;
+
         case 'navigate':
             navigate(data.direction);
             break;
@@ -223,6 +229,19 @@ function requestGameChange(changePath) {
 
 function startGame() {
     var countDown = 3;
+    var remainingTime = game.game.length;
+    const timer_precision = 100;
+
+    function sendRemainingTime() {
+        game.timer = setInterval(function () {
+            remainingTime -= timer_precision;
+            wss.broadcast(assembleSocket('remainingTime', remainingTime));
+
+            if (remainingTime <= 0) {
+                clearInterval(game.timer);
+            }
+        }, timer_precision);
+    }
 
     function sendCountDown() {
         setTimeout(function () {
@@ -234,6 +253,7 @@ function startGame() {
 
             } else {
                 game.coordinator.send(assembleSocket('start_game', game.game));
+                sendRemainingTime();
             }
         }, 1000);
     }
