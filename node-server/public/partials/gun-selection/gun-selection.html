@@ -15,7 +15,11 @@
       </ul>
     </div>
 
-    <div ng-if="game.gun != undefined" class="w3-col m7 l8 nf-item-desc w3-padding">
+    <div class="w3-col m7 l8 nf-item-desc">
+      <gun-specs gun="game.gun"></gun-specs>
+    </div>
+
+    <!--<div ng-if="game.gun != undefined" class="w3-col m7 l8 nf-item-desc w3-padding">
 
       <h2 class="nf-title">{{ game.gun.name }}</h2>
       <h4>{{ game.gun.description }}</h4>
@@ -58,7 +62,7 @@
           </table>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <a ng-click="nextScreen()" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Select the game type</a>
 

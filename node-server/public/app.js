@@ -54,11 +54,6 @@ angular.module('myApp', [
     $rootScope.nextScreen = function () {
         $rootScope.ws.$emit('start');
     };
-})
-
-/** Binds all routes for the app */
-.config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.otherwise({ redirectTo: '/' });
-}]);
+});
 
 

@@ -7,83 +7,15 @@
   <div class="w3-row nf-container">
     <div class="nf-item-desc">
 
-      <div ng-if="game.gun != undefined" class="w3-col s6 w3-padding">
-
-        <h2 class="nf-title">{{ game.gun.name }}</h2>
-        <h4>{{ game.gun.description }}</h4>
-        <p style="text-align: center;">
-          <img class="nf-gun-image" ng-src="/static/img/guns/{{ game.gun.image }}">
-        </p>
-        <div class="w3-row">
-          <div class="w3-col m12 l6">
-            <table class="nf-gun-specs">
-              <tr>
-                <td>Damage</td>
-                <td>
-                  <div class="w3-border">
-                    <div class="w3-grey" style="height:24px;width:{{ game.gun.damage }}%"></div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Accuracy</td>
-                <td>
-                  <div class="w3-border">
-                    <div class="w3-grey" style="height:24px;width:{{ game.gun.accuracy }}%"></div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Fire Rate</td>
-                <td>
-                  <div class="w3-border">
-                    <div class="w3-grey" style="height:24px;width:{{ game.gun.fire_rate }}%"></div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Ammo</td>
-                <td>
-                  <img class="nf-bullet" src="/static/img/bullet.png" ng-repeat="i in range(game.gun.ammo) track by $index">
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
+      <div class="w3-col s6">
+        <gun-specs gun="game.gun"></gun-specs>
       </div>
 
 
-      <div ng-if="game.game != undefined" class="w3-col s6 w3-padding">
-
-        <h2 class="nf-title">{{ game.game.name }}</h2>
-        <h4>{{ game.game.description }}</h4>
-
-        <div>
-          <h3>
-            <i class="fa fa-clock-o" aria-hidden="true"></i> Game Length
-          </h3>
-          <h4>{{ game.game.game_length / 60 }} minutes</h4>
-        </div>
-
-        <div>
-          <h3>
-            <i class="fa fa-bolt" aria-hidden="true"></i> Targets Max Time up
-          </h3>
-          <h4>{{ game.game.game_length }} seconds</h4>
-        </div>
-
-        <div>
-          <h3>
-            <i class="fa fa-bullseye" aria-hidden="true"></i> Enemies
-          </h3>
-          <h4 ng-if="game.game.number_of_target != undefined">
-            {{ game.game.number_of_target }} targets
-          </h4>
-          <h4 ng-if="game.game.number_of_target == undefined">
-            Ulimited targets
-          </h4>
-        </div>
+      <div class="w3-col s6">
+        <game-details game="game.game"></game-details>
       </div>
+     
 
     </div>
   </div>

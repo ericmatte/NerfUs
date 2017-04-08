@@ -7,43 +7,16 @@
   <div class="w3-row w3-margin nf-container">
     <div class="w3-col m5 l4">
       <ul class="w3-ul nf-gun-list">
-        <li ng-repeat="gameMode in games" ng-click="selectGame(gameMode)" ng-class="{selected: gameMode.game_id==game.game.game_id}" class="w3-padding-16">
+        <li ng-repeat="gameMode in games" ng-click="selectGame(gameMode)" ng-class="{selected: gameMode.game_id==game.game.game_id}"
+          class="w3-padding-16">
           <span class="w3-large nf-title">{{ gameMode.name }}</span><br>
           <span>{{ gameMode.description }}</span>
         </li>
       </ul>
     </div>
 
-    <div ng-if="game.game != undefined" class="w3-col m7 l8 nf-item-desc w3-padding">
-
-      <h2 class="nf-title">{{ game.game.name }}</h2>
-      <h4>{{ game.game.description }}</h4>
-
-      <div>
-        <h3>
-          <i class="fa fa-clock-o" aria-hidden="true"></i> Game Length
-        </h3>
-        <h4>{{ game.game.game_length / 60 }} minutes</h4>
-      </div>
-
-      <div>
-        <h3>
-          <i class="fa fa-bolt" aria-hidden="true"></i> Targets Max Time up
-        </h3>
-        <h4>{{ game.game.game_length }} seconds</h4>
-      </div>
-
-      <div>
-        <h3>
-          <i class="fa fa-bullseye" aria-hidden="true"></i> Enemies
-        </h3>
-        <h4 ng-if="game.game.number_of_target != undefined">
-          {{ game.game.number_of_target }} targets
-        </h4>
-        <h4 ng-if="game.game.number_of_target == undefined">
-          Ulimited targets
-        </h4>
-      </div>
+    <div ng-if="game.game != undefined" class="w3-col m7 l8 nf-item-desc">
+      <game-details game="game.game"></game-details>
     </div>
 
     <a ng-click="nextScreen()" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Mission Summary</a>
