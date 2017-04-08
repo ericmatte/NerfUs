@@ -66,12 +66,12 @@ function handleSocket(event, data, ws) {
                 ws.on('close', function close() {
                     console.log('Coordinator disconnected.');
                     game.coordinator = undefined;
-                    requestGameChange(false);
+                    requestGameChange();
                 });
             } else {
                 game.coordinator = undefined;
             }
-            requestGameChange(false);
+            requestGameChange();
             break;
 
         case 'reset_game':
@@ -80,22 +80,23 @@ function handleSocket(event, data, ws) {
             game.gameOn = false;
             game.gameStarted = false;
             game.state = 'Start Screen';
-            requestGameChange(false);
+            requestGameChange();
             break;
 
         case 'fetch_game':
-            requestGameChange(false);
+            requestGameChange();
             break;
 
         case 'start':
-            requestGameChange(true);
+            updateGameState();
+            requestGameChange();
             break;
 
         case 'gun':
             var q = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
             server.connection.query(q, data.rfid_code, function (err, gun) {
                 game.gun = gun[0];
-                requestGameChange(false);
+                requestGameChange();
             });
             break;
 
@@ -103,7 +104,7 @@ function handleSocket(event, data, ws) {
             var q = 'SELECT * FROM nerfus.game WHERE nerfus.game.game_id = ?';
             server.connection.query(q, data.game_id, function (err, gameMode) {
                 game.game = gameMode[0];
-                requestGameChange(false);
+                requestGameChange();
             });
             break;
 
@@ -161,7 +162,7 @@ function navigate(direction) {
                     var index = guns.map(function (e) { return e.gun_id; }).indexOf(game.gun.gun_id);
                     game.gun = guns[getNewIndex(direction, index, guns.length)];
                 }
-                requestGameChange(false);
+                requestGameChange();
             });
             break;
         case 'Game Selection':
@@ -172,7 +173,7 @@ function navigate(direction) {
                     var index = games.map(function (e) { return e.game_id; }).indexOf(game.game.game_id);
                     game.game = games[getNewIndex(direction, index, games.length)];
                 }
-                requestGameChange(false);
+                requestGameChange();
             });
             break;
     }
@@ -190,48 +191,8 @@ function getNewIndex(direction, index, arrayLength) {
     return index;
 }
 
-/** Handle app game navigation
- * @param {Boolean} changePath If true, will force the frontend to change it`s location path according to the server
- */
-function requestGameChange(changePath) {
-
-    if (changePath) {
-        switch (game.state) {
-            case 'Start Screen':
-                game.state = 'Gun Selection';
-                break;
-
-            case 'Gun Selection':
-                if (game.gun) {
-                    game.state = 'Game Selection';
-                }
-                break;
-
-            case 'Game Selection':
-                if (game.game) {
-                    game.state = 'Mission Summary';
-                }
-                break;
-
-            case 'Mission Summary':
-                if (game.coordinator) {
-                    startGame();
-                    game.state = 'Game On';
-                }
-                break;
-
-            case 'Game On':
-                break;
-
-            case 'Mission Report':
-                break;
-
-            default:
-                throw new Error('Game state "' + game.state + '" was not recognized!');
-                break;
-        }
-    }
-
+/** Handle app game navigation */
+function requestGameChange(changeState) {
     var params = {
         coordinator: (game.coordinator != undefined),
         gun: game.gun,
@@ -280,5 +241,42 @@ function stopGame() {
     clearInterval(game.timer);
     game.timer = undefined;
     game.state = 'Mission Report';
-    requestGameChange(false);
+    requestGameChange();
+}
+
+function updateGameState() {
+    switch (game.state) {
+        case 'Start Screen':
+            game.state = 'Gun Selection';
+            break;
+
+        case 'Gun Selection':
+            if (game.gun) {
+                game.state = 'Game Selection';
+            }
+            break;
+
+        case 'Game Selection':
+            if (game.game) {
+                game.state = 'Mission Summary';
+            }
+            break;
+
+        case 'Mission Summary':
+            if (game.coordinator) {
+                startGame();
+                game.state = 'Game On';
+            }
+            break;
+
+        case 'Game On':
+            break;
+
+        case 'Mission Report':
+            break;
+
+        default:
+            throw new Error('Game state "' + game.state + '" was not recognized!');
+            break;
+    }
 }
