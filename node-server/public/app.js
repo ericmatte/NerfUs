@@ -21,6 +21,7 @@ angular.module('myApp', [
     'myApp.gunSelection',
     'myApp.gameSelection',
     'myApp.missionSummary',
+    'myApp.gameOn',
     'myApp.mbed',
 ])
 
@@ -34,6 +35,10 @@ angular.module('myApp', [
      */
     $rootScope.range = function (num) {
         return new Array(num);
+    }
+
+    $rootScope.resetGame = function () {
+        $rootScope.ws.$emit('reset_game');
     }
 
     /** Game variables */

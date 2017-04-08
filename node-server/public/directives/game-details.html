@@ -7,14 +7,14 @@
     <h3>
       <i class="fa fa-clock-o" aria-hidden="true"></i> Game Length
     </h3>
-    <h4>{{ game.game_length / 60 }} minutes</h4>
+    <h4>{{ game.game_length / 60000 }} minutes</h4>
   </div>
 
   <div>
     <h3>
       <i class="fa fa-bolt" aria-hidden="true"></i> Targets Max Time up
     </h3>
-    <h4>{{ game.game_length }} seconds</h4>
+    <h4>{{ game.max_reflex_time / 1000 }} seconds</h4>
   </div>
 
   <div>
@@ -25,7 +25,7 @@
       {{ game.number_of_target }} targets
     </h4>
     <h4 ng-if="game.number_of_target == undefined">
-      Ulimited targets
+      Unlimited targets
     </h4>
   </div>
 </div>

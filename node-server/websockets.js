@@ -74,6 +74,14 @@ function handleSocket(event, data, ws) {
             requestGameChange(false);
             break;
 
+        case 'reset_game':
+            game.gun = undefined;
+            game.game = undefined;
+            game.gameOn = false;
+            game.currentPath = game.paths[0];
+            requestGameChange(false);
+            break;
+
         case 'fetch_game':
             requestGameChange(false);
             break;
@@ -119,10 +127,10 @@ function handleSocket(event, data, ws) {
  * @param {Boolean} coordinator true if a coordinator is connected
  */
 var game = {
-    gun: undefined, game: undefined, coordinator: undefined,
+    gun: undefined, game: undefined, gameOn: false, coordinator: undefined,
     currentPath: '/',
     // The list of path that the game must follow
-    paths: ['/', '/gun-selection', '/game-selection', '/ready']
+    paths: ['/', '/gun-selection', '/game-selection', '/ready', '/game-on']
 };
 
 module.exports = {
@@ -172,7 +180,7 @@ function getNewIndex(direction, index, arrayLength) {
 }
 
 /** Handle app game navigation
- * @param {JSON} data The associated data
+ * @param {Boolean} changePath If true, will force the frontend to change it`s location path according to the server
  */
 function requestGameChange(changePath) {
     var params = {
@@ -182,7 +190,7 @@ function requestGameChange(changePath) {
         path: game.currentPath
     };
 
-    if (game.coordinator && changePath) {
+    if (changePath) {
 
         if (!game.gun && !game.game) {
             // Go to Gun Selection Menu
@@ -192,9 +200,16 @@ function requestGameChange(changePath) {
             // Go to Game Selection Menu
             params.path = game.paths[2];
 
-        } else if (game.gun && game.game) {
+        } else if (game.gun && game.game && !game.gameOn) {
             // Go to Mission Summary
             params.path = game.paths[3];
+            game.gameOn = true;
+
+        } else if (game.gun && game.game && game.gameOn) {
+            if (game.coordinator) {
+                // The game has started!
+                params.path = game.paths[4];
+            }
         }
 
         game.currentPath = params.path;

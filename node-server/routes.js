@@ -25,12 +25,6 @@ app.get('/',function(req,res){
     res.sendFile('base.html', {'root': __dirname + '/public'});
 });
 
-/** This check if a mbed coordinator is connected. If so, then the game can be launched */
-app.post('/check-for-coordinator', function(req, res, next){
-    var coordinatorConnected = (ws.game.coordinator !== undefined);
-    return res.status(200).send(coordinatorConnected);
-});
-
 /** Get the complete list of guns */
 app.post('/get-guns', function(req, res, next){
     return databaseQuery('SELECT * FROM nerfus.gun', [], res);
