@@ -22,7 +22,7 @@ function databaseQuery(query, params, res) {
 
 /** Application entry point */
 app.get('/',function(req,res){
-    res.sendFile('base.html', {'root': __dirname + '/public/templates'});
+    res.sendFile('base.html', {'root': __dirname + '/public'});
 });
 
 /** This check if a mbed coordinator is connected. If so, then the game can be launched */
