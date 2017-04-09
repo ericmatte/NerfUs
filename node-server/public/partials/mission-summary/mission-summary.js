@@ -10,8 +10,5 @@ angular.module('myApp.missionSummary', ['ngRoute'])
 }])
 
 .controller('MissionSummary', ['$scope', '$rootScope', '$timeout', function ($scope, $rootScope, $timeout) {
-    /** Send the starting command to the server */
-    $scope.startGame = function () {
-        $rootScope.nextScreen();
-    };
+
 }]);

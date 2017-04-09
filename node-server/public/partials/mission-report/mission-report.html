@@ -37,7 +37,7 @@
   <p>
     Average reflex time : {{ game.report.averageReflexTime }}ms
   </p>
-  
+
   <p>
     Enemies killed : {{ game.report.enemies }}
   </p>
@@ -45,8 +45,41 @@
   <p>
     Allies harmed : {{ game.report.allies }}
   </p>
-  
+
   <p>
     Total : {{ game.report.targets }}
   </p>
+
+</div>
+
+<div>
+
+  <div ng-if="playerScoreSaved == false">
+    Save your score! {{ $parent.playerName }}
+    <br> Your name:
+    <div>
+      <input ng-model="$parent.playerName" type="text">
+      <button ng-click="savePlayerScore()" class="w3-btn w3-ripple w3-red">Save</button>
+    </div>
+  </div>
+  <p ng-if="playerScoreSaved">Your score has been saved!</p>
+
+  <h1>Leaderboard</h1>
+  <table class="w3-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tr ng-repeat="leader in leaderboard" ng-class="{'w3-red': leader.player.toLowerCase() == playerName.toLowerCase()}">
+      <td>{{ $index }}</td>
+      <td>{{ leader.player }}</td>
+      <td>{{ leader.score }}</td>
+    </tr>
+  </table>
+
+  <button ng-click="resetGame()" class="w3-btn w3-ripple w3-red">Start a new game</button>
+
 </div>

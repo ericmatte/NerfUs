@@ -19,7 +19,7 @@
       <game-details game="game.game"></game-details>
     </div>
 
-    <a ng-click="nextScreen()" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Mission Summary</a>
+    <a ng-click="nextScreen()" ng-class="{'w3-disabled': !game.game}" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Mission Summary</a>
 
   </div>
 </div>

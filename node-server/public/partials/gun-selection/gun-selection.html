@@ -19,7 +19,7 @@
       <gun-specs gun="game.gun"></gun-specs>
     </div>
 
-    <a ng-click="nextScreen()" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Select the game type</a>
+    <a ng-click="nextScreen()" ng-class="{'w3-disabled': !game.gun}" class="w3-button w3-red w3-xlarge w3-display-bottomright w3-margin">Next: Select the game type</a>
 
   </div>
 </div>

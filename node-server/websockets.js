@@ -93,7 +93,7 @@ function handleSocket(event, data, ws) {
             break;
 
         case 'gun':
-            var q = 'SELECT * FROM nerfus.gun WHERE nerfus.gun.rfid_code = ?';
+            var q = 'SELECT * FROM gun WHERE gun.rfid_code = ?';
             server.connection.query(q, data.rfid_code, function (err, gun) {
                 game.gun = gun[0];
                 requestGameChange();
@@ -101,7 +101,7 @@ function handleSocket(event, data, ws) {
             break;
 
         case 'game':
-            var q = 'SELECT * FROM nerfus.game WHERE nerfus.game.game_id = ?';
+            var q = 'SELECT * FROM game WHERE game.game_id = ?';
             server.connection.query(q, data.game_id, function (err, gameMode) {
                 game.game = gameMode[0];
                 requestGameChange();
@@ -156,7 +156,7 @@ module.exports = {
 function navigate(direction) {
     switch (game.state) {
         case 'Gun Selection':
-            server.connection.query('SELECT * FROM nerfus.gun', function (err, guns) {
+            server.connection.query('SELECT * FROM gun', function (err, guns) {
                 if (!game.gun) {
                     game.gun = guns[0];
                 } else {
@@ -167,7 +167,7 @@ function navigate(direction) {
             });
             break;
         case 'Game Selection':
-            server.connection.query('SELECT * FROM nerfus.game', function (err, games) {
+            server.connection.query('SELECT * FROM game', function (err, games) {
                 if (!game.game) {
                     game.game = games[0];
                 } else {

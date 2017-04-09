@@ -4,6 +4,11 @@ var app = express();
 var port = 8888; //process.env.PORT
 var wsPort = 8000;
 
+// Body parser for json params in post
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 /** MySQL connection */
 var connection = mysql.createConnection({
     host: 'localhost',
