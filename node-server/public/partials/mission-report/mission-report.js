@@ -10,5 +10,4 @@ angular.module('myApp.missionReport', ['ngRoute'])
 }])
 
 .controller('MissionReport', ['$scope', '$rootScope', function ($scope, $rootScope) {
-    
 }]);

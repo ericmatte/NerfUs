@@ -1,3 +1,52 @@
 <h1>
-  Game Over!
+  Mission Report
 </h1>
+
+<div class="w3-row">
+  <div class="w3-col s6">
+    <h2 class="nf-title">Gun: {{ game.gun.name }}</h2>
+    <p style="text-align: center;">
+      <img class="nf-gun-image" ng-src="/static/img/guns/{{ game.gun.image }}" style="max-height:100pt">
+    </p>
+  </div>
+
+  <div class="w3-col s6">
+    <h2 class="nf-title">Game: {{ game.game.name }}</h2>
+  </div>
+</div>
+
+<hr>
+
+<div>
+  <p>
+    Score: {{ game.report.score }}
+  </p>
+
+  <p>
+    Your time: {{ game.report.gameLength }}ms
+  </p>
+
+  <p>
+    Accuracy: {{ game.report.enemies / game.report.targets * 100 }}%
+  </p>
+</div>
+
+<hr>
+
+<div>
+  <p>
+    Average reflex time : {{ game.report.averageReflexTime }}ms
+  </p>
+  
+  <p>
+    Enemies killed : {{ game.report.enemies }}
+  </p>
+
+  <p>
+    Allies harmed : {{ game.report.allies }}
+  </p>
+  
+  <p>
+    Total : {{ game.report.targets }}
+  </p>
+</div>

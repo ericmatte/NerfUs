@@ -32,7 +32,7 @@ angular.module('myApp.mbed', ['ngRoute'])
         },
         {
             title: 'Mission report', description: 'Target=12, Enemies=8, Allies=4, AverageReflexTimeInMs=2000, GameLengthInMs=12354, Score=12668',
-            event: 'report', data: '{"Target":12, "Enemies":8, "Allies":4, "AverageReflexTimeInMs":2000, "GameLengthInMs":12354, "Score":12668}'
+            event: 'report', data: '{"targets":12, "enemies":8, "allies":4, "averageReflexTime":2000, "gameLength":12354, "score":12668}'
         },
         {
             title: 'Chat test', description: 'Simple way to test the websocket connection. Just send something with the event name "chat". The server will respond it back to you. You can also try sending a simple string with no event defined.',

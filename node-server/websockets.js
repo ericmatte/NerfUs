@@ -109,6 +109,7 @@ function handleSocket(event, data, ws) {
             break;
 
         case 'report':
+            game.report = data;
             if (game.timer != undefined) {
                 stopGame();
             }
@@ -197,6 +198,7 @@ function requestGameChange(changeState) {
         coordinator: (game.coordinator != undefined),
         gun: game.gun,
         game: game.game,
+        report: game.report,
         path: game.paths[game.state]
     };
 
@@ -214,6 +216,7 @@ function startGame() {
             wss.broadcast(assembleSocket('remainingTime', remainingTime));
 
             if (remainingTime <= 0) {
+                game.coordinator.send(assembleSocket('request_report'));
                 stopGame();
             }
         }, timer_precision);
