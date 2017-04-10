@@ -219,3 +219,17 @@ table.nf-gun-specs tr td:first-child {
 .nf-red {
     color: red;
 }
+
+hr {
+    border-top: 2px solid rgba(238, 238, 238, 0.75);
+    margin: 0;
+}
+
+.nf-player-stats h1 {
+    text-align: center;
+}
+
+.nf-player-stats .nf-targets i {
+    font-size: 3.5vh;
+    margin: 0.5vh;
+}

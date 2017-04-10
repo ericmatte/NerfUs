@@ -14,11 +14,12 @@
   </div>
 
   <div ng-if="game.report != undefined" class="w3-row w3-margin nf-container">
-    <div class="w3-col m7 l8">
+
+    <div class="w3-col m7 l8 w3-padding nf-player-stats">
       <div class="w3-row">
         <div class="w3-col m4">
           <h1>
-            <i class="fa fa-diamond" aria-hidden="true"></i> {{ game.report.score }}
+            <i class="fa fa-trophy" aria-hidden="true"></i> {{ game.report.score }}
           </h1>
         </div>
         <div class="w3-col m4">
@@ -62,15 +63,19 @@
         </h2>
         <div class="w3-col m6">
           <h2>
-            Enemies killed : {{ game.report.enemies }}
-            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+            Enemies killed
           </h2>
+          <p class="nf-targets" style="color: #f44336">
+            <i ng-repeat="i in range(game.report.enemies) track by $index" class="fa fa-user-circle-o" aria-hidden="true"></i>            
+          </p>
         </div>
         <div class="w3-col m6">
           <h2>
-            Allies harmed : {{ game.report.allies }}
-            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+            Allies harmed
           </h2>
+          <p class="nf-targets" style="color: #4CAF50">
+            <i ng-repeat="i in range(game.report.allies) track by $index" class="fa fa-user-circle-o" aria-hidden="true"></i>            
+          </p>
         </div>
       </div>
 
@@ -90,7 +95,7 @@
             </div>
           </div>
           <p ng-if="playerScoreSaved">Your score has been saved!</p>
-          <hr>
+          <hr style="margin: 12px 0;">
         </div>
 
         <div>
