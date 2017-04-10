@@ -1,87 +1,125 @@
 <div>
-  <h1>
-    Mission Report
-  </h1>
+  <div class="nf-title nf-container">
+    <h1>Mission Report</h1>
+  </div>
 
-  <div class="w3-row">
-    <div class="w3-col s6">
-      <h2 class="nf-title">Gun: {{ game.gun.name }}</h2>
-      <p style="text-align: center;">
-        <img class="nf-gun-image" ng-src="/static/img/guns/{{ game.gun.image }}" style="max-height:100pt">
-      </p>
-    </div>
 
-    <div class="w3-col s6">
-      <h2 class="nf-title">Game: {{ game.game.name }}</h2>
+  <div ng-if="game.report == undefined" class="w3-display-middle" style="text-align:center">
+    <div>
+      <img src="/static/img/time-up.png" class="big-logo">
+      <h3>
+        Waiting for mbed to send mission report...
+      </h3>
     </div>
   </div>
 
-  <hr>
+  <div ng-if="game.report != undefined" class="w3-row w3-margin nf-container">
+    <div class="w3-col m7 l8">
+      <div class="w3-row">
+        <div class="w3-col m4">
+          <h1>
+            <i class="fa fa-diamond" aria-hidden="true"></i> {{ game.report.score }}
+          </h1>
+        </div>
+        <div class="w3-col m4">
+          <h1>
+            <i class="fa fa-clock-o" aria-hidden="true"></i> {{ game.report.time.minutes }}:{{ game.report.time.seconds |
+            numberFixedLen:2 }}:{{ game.report.time.deciseconds }}
+          </h1>
+        </div>
+        <div class="w3-col m4">
+          <h1>
+            <i class="fa fa-crosshairs" aria-hidden="true"></i> {{ formatNumber(game.report.enemies / game.report.targets)
+            * 100 }}%
+          </h1>
+        </div>
+      </div>
 
-  <div>
-    <p>
-      Score: {{ game.report.score }}
-    </p>
+      <hr>
 
-    <p>
-      Your time: {{ game.report.gameLength }}ms
-    </p>
+      <div class="w3-row">
+        <div class="w3-col m6">
+          <h2>
+            {{ game.gun.name }}
+          </h2>
+          <img class="nf-gun-image" ng-src="/static/img/guns/{{ game.gun.image }}" style="max-height:100pt">
+        </div>
+        <div class="w3-col m6">
+          <h2>
+            {{ game.game.name }}
+          </h2>
+          <p>
+            {{ game.game.description }}
+          </p>
+        </div>
+      </div>
 
-    <p>
-      Accuracy: {{ game.report.enemies / game.report.targets * 100 }}%
-    </p>
-  </div>
+      <hr>
 
-  <hr>
+      <div class="w3-row">
+        <h2>
+          <i class="fa fa-bolt" aria-hidden="true"></i> Average Reflex Time: {{ game.report.averageReflexTime }} ms
+        </h2>
+        <div class="w3-col m6">
+          <h2>
+            Enemies killed : {{ game.report.enemies }}
+            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+          </h2>
+        </div>
+        <div class="w3-col m6">
+          <h2>
+            Allies harmed : {{ game.report.allies }}
+            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+          </h2>
+        </div>
+      </div>
 
-  <div>
-    <p>
-      Average reflex time : {{ game.report.averageReflexTime }}ms
-    </p>
+    </div>
 
-    <p>
-      Enemies killed : {{ game.report.enemies }}
-    </p>
+    <div class="w3-col m5 l4">
+      <div class="w3-padding nf-item-desc">
+        <div>
+          <div ng-if="playerScoreSaved == false">
+            <h4>Save your score!</h4>
+            <p style="margin: 0;">
+              Your name:
+            </p>
+            <div>
+              <input ng-model="$parent.playerName" type="text" style="width: 50%;">
+              <button ng-click="savePlayerScore()" class="w3-btn w3-ripple w3-red">Save</button>
+            </div>
+          </div>
+          <p ng-if="playerScoreSaved">Your score has been saved!</p>
+          <hr>
+        </div>
 
-    <p>
-      Allies harmed : {{ game.report.allies }}
-    </p>
-
-    <p>
-      Total : {{ game.report.targets }}
-    </p>
-
-  </div>
-
-  <div>
-
-    <div ng-if="playerScoreSaved == false">
-      Save your score! {{ $parent.playerName }}
-      <br> Your name:
-      <div>
-        <input ng-model="$parent.playerName" type="text">
-        <button ng-click="savePlayerScore()" class="w3-btn w3-ripple w3-red">Save</button>
+        <div>
+          <h2 class="nf-title">
+            <i class="fa fa-trophy" aria-hidden="true"></i> Leaderboard
+          </h2>
+          <table class="w3-table nf-leaderboard">
+            <thead>
+              <tr>
+                <th width="15%"></th>
+                <th>Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tr ng-repeat="leader in leaderboard" ng-class="{'w3-red': leader.player.toLowerCase() == playerName.toLowerCase()}">
+              <td>{{ $index+1 }}</td>
+              <td>{{ leader.player }}</td>
+              <td>{{ leader.score }}</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
-    <p ng-if="playerScoreSaved">Your score has been saved!</p>
 
-    <h1>Leaderboard</h1>
-    <table class="w3-table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tr ng-repeat="leader in leaderboard" ng-class="{'w3-red': leader.player.toLowerCase() == playerName.toLowerCase()}">
-        <td>{{ $index }}</td>
-        <td>{{ leader.player }}</td>
-        <td>{{ leader.score }}</td>
-      </tr>
-    </table>
-
-    <button ng-click="resetGame()" class="w3-btn w3-ripple w3-red">Start a new game</button>
 
   </div>
+
+  <a ng-click="resetGame()" class="w3-button w3-red w3-xlarge w3-display-bottommiddle w3-margin">
+    <i class="fa fa-refresh" aria-hidden="true"></i> Start a new game
+  </a>
+
 </div>

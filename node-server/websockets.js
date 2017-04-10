@@ -114,6 +114,8 @@ function handleSocket(event, data, ws) {
             game.report = data;
             if (game.timer != undefined) {
                 stopGame();
+            } else {
+                requestGameChange();
             }
             break;
 

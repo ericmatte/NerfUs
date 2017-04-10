@@ -28,10 +28,14 @@ angular.module('myApp', [
 
 
 /** Filter for leading zeros: 21 -> 0021 */
-.filter('numberFixedLen', ()=>(a,b)=>(1e4+""+a).slice(-b))
+.filter('numberFixedLen', () => (a, b) => (1e4 + "" + a).slice(-b))
 
 .run(function ($rootScope, $websocket, $http, $location) {
     connectWebsocket($rootScope, $websocket);
+
+    $rootScope.formatNumber = function(i) {
+        return Math.round(i * 100)/100; 
+    }
 
     /** Simple function that convert a number into an array
      * This is use to make loop in angular.js templates
@@ -41,6 +45,18 @@ angular.module('myApp', [
     $rootScope.range = function (num) {
         return new Array(num);
     }
+
+    /** Convert an value in ms into a time format
+     * @param {Number} num The value in ms
+     * @return {Array} A json of the time
+     */
+    $rootScope.msToTime = function (num) {
+        return {
+            minutes: Math.floor((num % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds: Math.floor((num % (1000 * 60)) / 1000),
+            deciseconds: Math.floor((num % 1000) / 100),
+        }
+    };
 
     $rootScope.resetGame = function () {
         $rootScope.ws.$emit('reset_game');
@@ -55,6 +71,11 @@ angular.module('myApp', [
             $rootScope.game = { inGame: true, coordinator: false };
             // Merge new params into the game variable
             $rootScope.game = Object.assign($rootScope.game, gameParams);
+
+            if ($rootScope.game && $rootScope.game.report && $rootScope.game.report.gameLength) {
+                $rootScope.game.report.time = $rootScope.msToTime($rootScope.game.report.gameLength);
+            }
+
             if (gameParams.path) { $location.url(gameParams.path); }
 
             $rootScope.$apply();

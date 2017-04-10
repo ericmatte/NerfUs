@@ -20,14 +20,7 @@ angular.module('myApp.gameOn', ['ngRoute'])
         });
 
         $rootScope.ws.$on('remainingTime', function (remainingTime) {
-
-            if ($scope.time === undefined) {
-                $scope.time = { minutes: undefined, seconds: undefined, milliseconds: undefined };
-            }
-
-            $scope.time.minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-            $scope.time.seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-            $scope.time.deciseconds = Math.floor((remainingTime % 1000) / 100);
+            $scope.time = $rootScope.msToTime(remainingTime);
 
             // If their is not much time remaining, will blink the countdown
             function timerBlinker() {

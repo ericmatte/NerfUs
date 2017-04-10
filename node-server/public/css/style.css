@@ -89,6 +89,11 @@ div.columns figure {
     padding-left: 3em;
 }
 
+.nf-leaderboard th {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
 .nf-title {
     text-transform: uppercase;
     padding-top: 0.2em;
