@@ -1,14 +1,15 @@
-<div class="noselect">
-  <div class="w3-display-middle">
-    <h1>
-      {{ countdown == 0 ? 'Game On!' : countdown }}
+<div>
+  <div class="w3-display-middle" style="text-align:center">
+    <h1 class="nf-numeric" ng-if="time == undefined">
+      {{ countdown }}
     </h1>
     <div ng-if="time != undefined">
-      <h2>
-        Time left
-      </h2>
-      <h1>
+      <img src="/static/img/game-on.png" class="big-logo">
+      <h1 class="nf-numeric" ng-class="{'nf-red': redCountdown}">
         {{ time.minutes }}:{{ time.seconds | numberFixedLen:2 }}:{{ time.deciseconds }}
+      </h1>
+      <h1 style="text-transform: uppercase;">
+        Time left
       </h1>
     </div>
   </div>

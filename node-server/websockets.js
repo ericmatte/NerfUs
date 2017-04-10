@@ -80,6 +80,8 @@ function handleSocket(event, data, ws) {
             game.gameOn = false;
             game.gameStarted = false;
             game.state = 'Start Screen';
+            clearInterval(game.timer);
+            game.timer = undefined;
             requestGameChange();
             break;
 

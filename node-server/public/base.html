@@ -16,17 +16,18 @@
 
 <body ng-app="myApp">
 
-  <div class="nf-logo w3-display-topleft">
-    <iframe width="400" height="50" src="https://www.youtube.com/embed/2qetI-4XvRg?autoplay=0" frameborder="0"></iframe>
-  </div>
-  <div class="nf-logo w3-display-topright">
-    <span ng-if="!game.coordinator">
+  <div id="topBar">
+    <div class="nf-logo w3-display-topleft">
+      <iframe width="400" height="50" src="https://www.youtube.com/embed/2qetI-4XvRg?autoplay=0" frameborder="0"></iframe>
+    </div>
+    <div class="nf-logo w3-display-topright">
+      <span ng-if="!game.coordinator">
       <i class="fa fa-exclamation-triangle" style="color: yellow; font-size: 18pt;"></i> Waiting for coordinator to connect...
     </span>
-    <a ng-click="resetGame()" class="nf-logo-top">
-      <img src="/static/img/favicon.png" width="50" height="50" />
-      NerfUS
-    </a>
+      <a ng-click="resetGame()" class="nf-logo-top">
+        <img src="/static/img/favicon.png" width="50" height="50" /> NerfUS
+      </a>
+    </div>
   </div>
 
   <ng-view></ng-view>

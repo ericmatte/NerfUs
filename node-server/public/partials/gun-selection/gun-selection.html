@@ -1,4 +1,4 @@
-<div class="noselect">
+<div>
 
   <div class="nf-title nf-container">
     <h1>Weapon Selection</h1>
@@ -9,7 +9,7 @@
       <ul class="w3-ul nf-gun-list">
         <li ng-repeat="gun in guns" ng-click="selectGun(gun)" ng-class="{selected: gun.gun_id==game.gun.gun_id}" class="w3-padding-16">
           <img ng-src="/static/img/guns/{{ gun.image }}">
-          <span class="w3-large nf-title">{{ gun.name }}</span><br>
+          <span class="h4 nf-title">{{ gun.name }}</span><br>
           <span>{{ gun.description }}</span>
         </li>
       </ul>
@@ -23,6 +23,3 @@
 
   </div>
 </div>
-
-
-<!--<img src="http://www.imfdb.org/images/thumb/1/15/Bo3xr2.jpg/600px-Bo3xr2.jpg">-->

@@ -1,9 +1,18 @@
 /* Main CSS */
 html, body, h1, h2, h3, h4, h5, h6 {
   font-family: 'Sanchez', serif;
+  font-size: 2vh;
 }
+h1, .h1 { font-size: 5vh; }
+h2, .h2 { font-size: 3vh; }
+h3, .h3 { font-size: 2.8vh; }
+h4, .h4 { font-size: 2.6vh; }
+h5, .h5 { font-size: 2.4vh; }
+h6, .h6 { font-size: 2.2vh; }
+
+
 html {
-    background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('/static/img/background.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/static/img/background.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -21,7 +30,7 @@ body {
     vertical-align: middle;
 }
 
-.noselect {
+div.ng-scope:not(.mbed), #topBar  {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
@@ -111,7 +120,11 @@ div.columns figure {
 .nf-container .nf-item-desc .nf-bullet {
     margin: 0 2pt;
     width: auto;
-    height: 20pt;
+    height: 3.5vh;
+}
+
+.nf-gauge {
+    height: 3vh;
 }
 
 .nf-container .nf-item-desc .nf-gun-image {
@@ -143,7 +156,8 @@ div.columns figure {
 }
 
 .nf-gun-list img {
-    width: 80pt;
+    width: auto;
+    height: 8vh;
     float: right;
 }
 /* END OF Gun List */
@@ -178,4 +192,25 @@ table.nf-gun-specs tr td:first-child {
 }
 .nf-specs > div {
     margin: 30px;
+}
+
+.nf-gun-image {
+    width: auto;
+    height: 24vh;
+}
+
+.big-logo {
+    max-width:100%;
+    max-height: 20vh;
+    height: auto;
+}
+
+.nf-numeric {
+    font-size: 16vh;
+    font-family: Consolas, monaco, monospace;
+    font-weight: bold;
+}
+
+.nf-red {
+    color: red;
 }

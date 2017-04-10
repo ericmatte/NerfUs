@@ -2,7 +2,7 @@
 
   <h2 class="nf-title">{{ gun.name }}</h2>
   <h4>{{ gun.description }}</h4>
-  <p style="text-align: center;">
+  <p style="text-align: center; margin: 0;">
     <img class="nf-gun-image" ng-src="/static/img/guns/{{ gun.image }}">
   </p>
   <div class="w3-row">
@@ -12,7 +12,7 @@
           <td>Damage</td>
           <td>
             <div class="w3-border">
-              <div class="w3-grey" style="height:24px;width:{{ gun.damage }}%"></div>
+              <div class="w3-grey nf-gauge" style="width:{{ gun.damage }}%"></div>
             </div>
           </td>
         </tr>
@@ -20,7 +20,7 @@
           <td>Accuracy</td>
           <td>
             <div class="w3-border">
-              <div class="w3-grey" style="height:24px;width:{{ gun.accuracy }}%"></div>
+              <div class="w3-grey nf-gauge" style="width:{{ gun.accuracy }}%"></div>
             </div>
           </td>
         </tr>
@@ -28,7 +28,7 @@
           <td>Fire Rate</td>
           <td>
             <div class="w3-border">
-              <div class="w3-grey" style="height:24px;width:{{ gun.fire_rate }}%"></div>
+              <div class="w3-grey nf-gauge" style="width:{{ gun.fire_rate }}%"></div>
             </div>
           </td>
         </tr>

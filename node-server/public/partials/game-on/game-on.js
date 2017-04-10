@@ -2,37 +2,54 @@
 
 angular.module('myApp.gameOn', ['ngRoute'])
 
-.config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/game-on', {
-        templateUrl: 'static/partials/game-on/game-on.html',
-        controller: 'GameOn'
-    });
-}])
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.when('/game-on', {
+            templateUrl: 'static/partials/game-on/game-on.html',
+            controller: 'GameOn'
+        });
+    }])
 
-.controller('GameOn', ['$scope', '$rootScope', '$timeout', function ($scope, $rootScope, $timeout) {
-    $scope.countdown = 3;
-    $scope.time = undefined
+    .controller('GameOn', ['$scope', '$rootScope', '$timeout', function ($scope, $rootScope, $timeout) {
+        $scope.countdown = 3;
+        $scope.redCountdown = false;
+        $scope.time = undefined
 
-    $rootScope.ws.$on('countdown', function (countdown) {
-        $scope.countdown = countdown;
-        $scope.$apply();
-    });
+        $rootScope.ws.$on('countdown', function (countdown) {
+            $scope.countdown = countdown;
+            $scope.$apply();
+        });
 
-    $rootScope.ws.$on('remainingTime', function (remainingTime) {
-        if ($scope.time === undefined) {
-            $scope.time = { minutes: undefined, seconds: undefined, milliseconds: undefined };
-        }
+        $rootScope.ws.$on('remainingTime', function (remainingTime) {
 
-        $scope.time.minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-        $scope.time.seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-        $scope.time.deciseconds = Math.floor((remainingTime % 1000) / 100);
+            if ($scope.time === undefined) {
+                $scope.time = { minutes: undefined, seconds: undefined, milliseconds: undefined };
+            }
 
-        $scope.$apply();
-    });
+            $scope.time.minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+            $scope.time.seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+            $scope.time.deciseconds = Math.floor((remainingTime % 1000) / 100);
 
-    /** Detachs all websockets of the scope and save the selected gun */
-    $scope.$on('$locationChangeStart', function (event) {
-        $rootScope.ws.$un('countdown');
-        $rootScope.ws.$un('remainingTime');
-    });
-}]);
+            // If their is not much time remaining, will blink the countdown
+            function timerBlinker() {
+                $scope.redCountdown = !$scope.redCountdown;
+                $scope.blinker = setTimeout(timerBlinker, 100 * $scope.time.seconds);
+            }
+
+            if ($scope.time.minutes == 0 && $scope.time.seconds <= 10 && $scope.blinker == undefined) {
+                $scope.blinker = setTimeout(timerBlinker, 100 * $scope.time.seconds);
+            }
+
+            $scope.$apply();
+        });
+
+        /** Detachs all websockets of the scope and save the selected gun */
+        $scope.$on('$locationChangeStart', function (event) {
+            if ($scope.blinker != undefined) {
+                clearTimeout($scope.blinker);
+                $scope.blinker = undefined;
+            }
+            clearInterval($scope.blinker);
+            $rootScope.ws.$un('countdown');
+            $rootScope.ws.$un('remainingTime');
+        });
+    }]);
