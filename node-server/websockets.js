@@ -80,6 +80,7 @@ function handleSocket(event, data, ws) {
             game.gameOn = false;
             game.gameStarted = false;
             game.state = 'Start Screen';
+            game.playerName = undefined;
             clearInterval(game.timer);
             game.timer = undefined;
             requestGameChange();
@@ -203,6 +204,7 @@ function requestGameChange(changeState) {
         gun: game.gun,
         game: game.game,
         report: game.report,
+        playerName: game.playerName,
         path: game.paths[game.state]
     };
 

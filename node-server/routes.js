@@ -51,6 +51,7 @@ app.post('/save-player-score', function (req, res, next) {
             console.error(err);
             return res.status(400).send(err);
         } else {
+            ws.game.playerName = b.playerName;
             return res.status(200).send('saved');
         }
     });

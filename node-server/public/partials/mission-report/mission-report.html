@@ -84,17 +84,17 @@
     <div class="w3-col m5 l4">
       <div class="w3-padding nf-item-desc">
         <div>
-          <div ng-if="playerScoreSaved == false">
+          <div ng-if="playerName == undefined">
             <h4>Save your score!</h4>
             <p style="margin: 0;">
               Your name:
             </p>
             <div>
-              <input ng-model="$parent.playerName" type="text" style="width: 50%;">
-              <button ng-click="savePlayerScore()" class="w3-btn w3-ripple w3-red">Save</button>
+              <input ng-model="player" type="text" style="width: 50%;">
+              <button ng-click="savePlayerScore(player)" class="w3-btn w3-ripple w3-red">Save</button>
             </div>
           </div>
-          <p ng-if="playerScoreSaved">Your score has been saved!</p>
+          <p ng-if="playerName != undefined">Your score has been saved!</p>
           <hr style="margin: 12px 0;">
         </div>
 

@@ -71,7 +71,8 @@ angular.module('myApp', [
             $rootScope.game = { inGame: true, coordinator: false };
             // Merge new params into the game variable
             $rootScope.game = Object.assign($rootScope.game, gameParams);
-
+            $rootScope.playerName = gameParams.playerName;
+            
             if ($rootScope.game && $rootScope.game.report && $rootScope.game.report.gameLength) {
                 $rootScope.game.report.time = $rootScope.msToTime($rootScope.game.report.gameLength);
             }

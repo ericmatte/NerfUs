@@ -25,12 +25,13 @@ angular.module('myApp.missionReport', ['ngRoute'])
     getLeaderBoard();
 
     /** Save player score and return updated leaderboard */
-    $scope.savePlayerScore = function (game) {
-        if ($scope.playerName) {
-            var data = Object.assign($rootScope.game, { playerName: $scope.playerName });
+    $scope.savePlayerScore = function (playerName) {
+        if (playerName) {
+            var data = Object.assign($rootScope.game, { playerName: playerName });
 
             $http({ method: 'POST', url: '/save-player-score', data: data })
                 .success(function (data, status) {
+                    $rootScope.playerName = playerName;
                     $scope.playerScoreSaved = true;
                     getLeaderBoard();
                 })
