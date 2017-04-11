@@ -62,27 +62,21 @@ function handleSocket(event, data, ws) {
     switch (event.toLowerCase()) {
         case 'mbed':
             if (data.state == 'connected') {
-                game.coordinator = ws;
+                coordinator = ws;
                 ws.on('close', function close() {
                     console.log('Coordinator disconnected.');
                     game.coordinator = undefined;
                     requestGameChange();
                 });
             } else {
-                game.coordinator = undefined;
+                coordinator = undefined;
             }
             requestGameChange();
             break;
 
         case 'reset_game':
-            game.gun = undefined;
-            game.game = undefined;
-            game.gameOn = false;
-            game.gameStarted = false;
-            game.state = 'Start Screen';
-            game.playerName = undefined;
             clearInterval(game.timer);
-            game.timer = undefined;
+            game = Object.assign({}, gameDefaults);
             requestGameChange();
             break;
 
@@ -135,10 +129,9 @@ function handleSocket(event, data, ws) {
  * @param {Boolean} inGame When true, the app will follow the games variables
  * @param {Dict} gun The selected gun
  * @param {Dict} game The selected game
- * @param {Boolean} coordinator true if a coordinator is connected
  */
-var game = {
-    gun: undefined, game: undefined, gameOn: false, coordinator: undefined,
+var gameDefaults = {
+    gun: undefined, game: undefined,
     state: 'Start Screen',
     // The list of path that the game must follow
     paths: {
@@ -150,6 +143,8 @@ var game = {
         'Mission Report': '/mission-report'
     }
 };
+var game = Object.assign({}, gameDefaults);
+var coordinator = undefined;
 
 module.exports = {
     game: game
@@ -200,7 +195,7 @@ function getNewIndex(direction, index, arrayLength) {
 /** Handle app game navigation */
 function requestGameChange(changeState) {
     var params = {
-        coordinator: (game.coordinator != undefined),
+        coordinator: (coordinator != undefined),
         gun: game.gun,
         game: game.game,
         report: game.report,
@@ -222,7 +217,7 @@ function startGame() {
             wss.broadcast(assembleSocket('remainingTime', remainingTime));
 
             if (remainingTime <= 0) {
-                game.coordinator.send(assembleSocket('request_report'));
+                coordinator.send(assembleSocket('request_report'));
                 stopGame();
             }
         }, timer_precision);
@@ -237,12 +232,18 @@ function startGame() {
                 sendCountDown();
 
             } else {
-                game.coordinator.send(assembleSocket('start_game', game.game));
-                sendRemainingTime();
+                if (game.state == 'Game On') {
+                    coordinator.send(assembleSocket('start_game', game.game));
+                    sendRemainingTime();
+                }
             }
         }, 1000);
     }
 
+    if (game.timer != undefined) {
+        clearInterval(game.timer);
+        game.timer = undefined;
+    }
     sendCountDown();
 }
 
@@ -272,7 +273,7 @@ function updateGameState() {
             break;
 
         case 'Mission Summary':
-            if (game.coordinator) {
+            if (coordinator != undefined) {
                 startGame();
                 game.state = 'Game On';
             }

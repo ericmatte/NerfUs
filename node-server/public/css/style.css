@@ -30,7 +30,7 @@ body {
     vertical-align: middle;
 }
 
-div.ng-scope:not(.mbed), #topBar  {
+ng-view > div.ng-scope:not(.mbed), #topBar  {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */

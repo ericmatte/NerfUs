@@ -72,10 +72,20 @@ angular.module('myApp.mbed', ['ngRoute'])
         alert(message);
     });
 
+    /** Handle mbed message */
+    $rootScope.ws.$on('start_game', function (message) {
+        alert('Message to mbed from server: "start_game"');
+    });
+    $rootScope.ws.$on('request_report', function (message) {
+        alert('Message to mbed from server: "request_report"');
+    });
+
 
     /** Detachs all websockets of the scope */
     $scope.$on('$locationChangeStart', function (event) {
         $rootScope.game.inGame = true;
         $rootScope.ws.$un('chat'); // Detaching scope websocket
+        $rootScope.ws.$un('start_game'); // Detaching scope websocket
+        $rootScope.ws.$un('request_report'); // Detaching scope websocket
     });
 }]);
