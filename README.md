@@ -4,8 +4,6 @@
 
 <p>Theses are the steps to run locally the server on your computer.</p>
 
-<p>*<em>This guide may not be complete. Feel free to change any section for an easier configuration.</em></p>
-
 <p>
 	<br>
 </p>
@@ -56,11 +54,7 @@
 
 <p>Download &amp; install<strong>&nbsp;Bitvise Tunnelier&nbsp;</strong>here : <a href="https://www.bitvise.com/download-area">https://www.bitvise.com/download-area</a>.</p>
 
-<p>Now, in the root folder of the project, their is a file named <strong>bitvise-tunnel.tlp</strong>.</p>
-
-<p>Click on the file, and press login in Bitvise.</p>
-
-<p>If the connection is successful, you can minimize this window.</p>
+<p>Make a tunnel to the server running the database instance.</p>
 
 <p>*<em>Note that Bitvise must be running as long as you want to run the server locally.</em></p>
 
@@ -105,7 +99,6 @@
 </blockquote>
 
 <p>
-	<br>
 </p>
 
 <p>That&#39;s all!</p>
