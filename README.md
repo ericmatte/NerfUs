@@ -1,104 +1,81 @@
-#NerfUS:&nbsp;A Shooting Range Game
 
-<h3><span style="font-size: 24px;">S5 Project, Team P05</span></h3>
+# NerfUS: A Shooting Range Game
 
-<p>Theses are the steps to run locally the server on your computer.</p>
+*S5 Project, Team P05.*
 
-<p>
-	<br>
-</p>
+NerfUS is a shooting range game using Nerfs, embedded systems, and a web app on a server.
+This project contains the web server part of the game.
+The web app is used to show the game interfaces and menus, and communicate with a mesh networks of embedded systems to elevate wooden targets in real-time.
 
-<p><strong><span style="font-size: 18px;">1. Download NerfUS</span></strong></p>
+----------
 
-<p>Download the latest server app of NerfUS from this repo.</p>
+## Installation instructions
+Theses are the steps to run locally the server on your computer.
 
-<p>
-	<br>
-</p>
+1. Download NerfUS
 
-<p><strong><span style="font-size: 18px;">2. Installing Node.JS</span></strong></p>
+Download the latest server app of NerfUS from this repo.
 
-<p>- Grab the latest <strong>LTS&nbsp;</strong>version of Node.JS from the web site <a href="https://nodejs.org/en/">https://nodejs.org/en/</a>.</p>
 
-<p>- Run the installer</p>
+3. Installing Node.JS
 
-<p>- Follow the steps</p>
+- Grab the latest LTS version of Node.JS from the web site https://nodejs.org/en/.
+- Run the installer
+- Follow the steps
 
-<p>
-	<br>
-</p>
 
-<p><span style="font-size: 18px;"><strong>3. Intalling Project Dependencies</strong></span></p>
+3. Intalling Project Dependencies
 
-<p>Open a <strong>CMD</strong> under the project folder<strong>&nbsp;./node-server</strong>.</p>
+Open a **CMD** under the project folder **./node-server**.
 
-<p>In that folder, their is a file named package.json, which contains all the necessary dependencies for this project.</p>
+In that folder, their is a file named package.json, which contains all the necessary dependencies for this project.
 
-<p>In your CMD, simply run this command:</p>
+In your CMD, simply run this command:
 
-<blockquote>
-	npm install
-</blockquote>
+    npm install
 
-<p>This will download all the dependencies from the package.json file.</p>
+This will download all the dependencies from the package.json file.
 
-<p>
-	<br>
-</p>
 
-<p><span style="font-size: 18px;"><strong>4. Installing and starting Bitvise tunneling</strong></span></p>
+4. Installing and starting Bitvise tunneling
 
-<p>Before running the server locally on your working station, you need to setup a tunnel to the real NerfUS server database.</p>
+Before running the server locally on your working station, you need to setup a tunnel to the real NerfUS server database.
 
-<p>This will allow you local server to fetch data from the database, and it&#39;s necessary for the server to be able to run.</p>
+This will allow you local server to fetch data from the database, and it's necessary for the server to be able to run.
 
-<p>Download &amp; install<strong>&nbsp;Bitvise Tunnelier&nbsp;</strong>here : <a href="https://www.bitvise.com/download-area">https://www.bitvise.com/download-area</a>.</p>
+Download & install **Bitvise Tunnelier** here : https://www.bitvise.com/download-area.
 
-<p>Make a tunnel to the server running the database instance.</p>
+Make a tunnel to the server running the database instance.
 
-<p>*<em>Note that Bitvise must be running as long as you want to run the server locally.</em></p>
+*Note that Bitvise must be running as long as you want to run the server locally.
 
-<p>
-	<br>
-</p>
 
-<p><span style="font-size: 18px;"><strong>5. Start the server in debug mode</strong></span></p>
+5. Start the server in debug mode
 
-<p>Open<strong>&nbsp;two CMD terminals</strong> into the<strong>&nbsp;./node-server</strong> folder.</p>
+Open two **CMD** terminals into the **./node-server folder**.
 
-<p>On the first on, run this:</p>
+On the first on, run this:
 
-<blockquote>
 	node_modules\.bin\node-inspector
-</blockquote>
 
-<p>It will show you an local web address. This is the <strong>server-side debugging tool</strong>. Use chrome for better debugging.</p>
+It will show you an local web address. This is the **server-side debugging tool**. Use chrome for better debugging.
 
-<p>On the second CMD, run this:</p>
+On the second CMD, run this:
 
-<blockquote>
-	node_modules\.bin\nodemon --debug
-</blockquote>
+    node_modules\.bin\nodemon --debug
 
-<p>Nodemon will start the node server, and also listen for any changes in the code. When that happens, it will automatically restart the server.</p>
+Nodemon will start the node server, and also listen for any changes in the code. When that happens, it will automatically restart the server.
 
-<p><em>While their is a lot of way to run a node-js server, really like this one, because it give you some powerful debugging features.</em></p>
+*While their is a lot of way to run a node-js server, this one is great, because it give you some powerful debugging features.*
 
-<p>If you want to be able to run nodemon and node-inspector with any node.js project, install the packages globally:</p>
+If you want to be able to run nodemon and node-inspector with any node.js project, install the packages globally:
 
-<blockquote>
-	npm install -g nodemon node-inspector
-</blockquote>
+    npm install -g nodemon node-inspector
 
-<p>After that, you will be able to simply run these commands:</p>
+After that, you will be able to simply run these commands:
 
-<blockquote>
-	node-inspector
-	<br>
-	nodemon
-</blockquote>
+    node-inspector 
+    nodemon
 
-<p>
-</p>
 
-<p>That&#39;s all!</p>
+That's all!
