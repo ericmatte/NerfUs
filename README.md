@@ -12,19 +12,19 @@ The web app is used to show the game interfaces and menus, and communicate with 
 ## Installation instructions
 Theses are the steps to run locally the server on your computer.
 
-1. Download NerfUS
+### 1. Download NerfUS
 
 Download the latest server app of NerfUS from this repo.
 
 
-3. Installing Node.JS
+### 2. Installing Node.JS
 
 - Grab the latest LTS version of Node.JS from the web site https://nodejs.org/en/.
 - Run the installer
 - Follow the steps
 
 
-3. Intalling Project Dependencies
+### 3. Intalling Project Dependencies
 
 Open a **CMD** under the project folder **./node-server**.
 
@@ -37,7 +37,7 @@ In your CMD, simply run this command:
 This will download all the dependencies from the package.json file.
 
 
-4. Installing and starting Bitvise tunneling
+### 4. Installing and starting Bitvise tunneling
 
 Before running the server locally on your working station, you need to setup a tunnel to the real NerfUS server database.
 
@@ -50,7 +50,7 @@ Make a tunnel to the server running the database instance.
 *Note that Bitvise must be running as long as you want to run the server locally.
 
 
-5. Start the server in debug mode
+### 5. Start the server in debug mode
 
 Open two **CMD** terminals into the **./node-server folder**.
 
@@ -78,4 +78,4 @@ After that, you will be able to simply run these commands:
     nodemon
 
 
-That's all!
+***That's all!***
